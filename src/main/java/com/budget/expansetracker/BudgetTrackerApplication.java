@@ -26,7 +26,7 @@ public class BudgetTrackerApplication extends Application {
     private Button transactionsButton;
     private Button visualsButton;
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) {
 
         overviewButton = new Button("Overview");
         transactionsButton = new Button("Transactions");
