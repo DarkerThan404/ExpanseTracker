@@ -2,6 +2,6 @@ package com.budget.expansetracker.controllers;
 
 import javafx.scene.Node;
 
-public interface ViewController {
+public interface IController {
     Node getView();
 }

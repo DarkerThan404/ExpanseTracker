@@ -55,6 +55,8 @@ public class BudgetTrackerApplication extends Application {
         root = new BorderPane();
 
         root.setLeft(createMenu());
+
+        root.setCenter(overviewController.getView());
         // Create the scene with the root layout
         Scene scene = new Scene(root, 800, 600);
 
