@@ -4,9 +4,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 public class OverviewView {
@@ -40,8 +44,10 @@ public class OverviewView {
         Label categoriesLabel = new Label("Categories:");
         // Add category items to the categoriesBox
         for (int i = 1; i <= 5; i++) {
-            Label categoryLabel = new Label("Category " + i);
-            categoriesBox.getChildren().add(categoryLabel);
+            String categoryName = "Category " + i;
+            double progress = i * 0.2;
+            VBox categoryBox = createCategoryBox(categoryName, progress);
+            categoriesBox.getChildren().add(categoryBox);
         }
 
         // Create and configure the recent transactions component
@@ -59,6 +65,24 @@ public class OverviewView {
         root.setTop(balanceBox);
         root.setLeft(categoriesBox);
         root.setRight(transactionsBox);
+    }
+
+    private VBox createCategoryBox(String categoryName, double progress) {
+        VBox categoryBox = new VBox();
+        categoryBox.setSpacing(5);
+        categoryBox.setAlignment(Pos.CENTER);
+
+        Label nameLabel = new Label(categoryName);
+        ProgressBar progressBar = new ProgressBar(progress);
+
+        Label progressLabel = new Label(String.format("%.0f / %.0f", progress * 100, 100.0));
+
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(progressBar, progressLabel);
+
+        categoryBox.getChildren().addAll(nameLabel, stackPane);
+
+        return categoryBox;
     }
 
     public void setBalanceText(String balance) {
