@@ -1,4 +1,10 @@
 package com.budget.expansetracker.controllers;
 
-public class OverviewController {
+import javafx.scene.Node;
+
+public class OverviewController implements ViewController{
+    @Override
+    public Node getView() {
+        return null;
+    }
 }

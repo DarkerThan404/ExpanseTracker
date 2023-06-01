@@ -1,4 +1,10 @@
 package com.budget.expansetracker.controllers;
 
-public class VisualsController {
+import javafx.scene.Node;
+
+public class VisualsController implements ViewController {
+    @Override
+    public Node getView() {
+        return null;
+    }
 }

@@ -36,6 +36,22 @@ public class BudgetTrackerApplication extends Application {
         transactionsController = new TransactionsController();
         visualsController = new VisualsController();
 
+        overviewButton.setOnAction( event -> {
+            Node overviewView = overviewController.getView();
+            setContent(overviewView);
+        } );
+
+        transactionsButton.setOnAction( event -> {
+            Node transactionsView = transactionsController.getView();
+            setContent(transactionsView);
+        });
+
+        visualsButton.setOnAction( event ->  {
+            Node visualsView = visualsController.getView();
+            setContent(visualsView);
+        });
+
+
         root = new BorderPane();
 
         root.setLeft(createMenu());

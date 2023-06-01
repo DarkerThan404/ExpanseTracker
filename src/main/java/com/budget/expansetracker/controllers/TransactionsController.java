@@ -1,4 +1,10 @@
 package com.budget.expansetracker.controllers;
 
-public class TransactionsController {
+import javafx.scene.Node;
+
+public class TransactionsController implements ViewController {
+    @Override
+    public Node getView() {
+        return null;
+    }
 }
