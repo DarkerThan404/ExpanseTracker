@@ -1,7 +1,11 @@
 package com.budget.expansetracker;
 
+import com.budget.expansetracker.controllers.OverviewController;
+import com.budget.expansetracker.controllers.TransactionsController;
+import com.budget.expansetracker.controllers.VisualsController;
 import javafx.application.Application;
 
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -11,20 +15,30 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class BudgetTrackerApplication extends Application {
+
+    private BorderPane root;
+
+    private OverviewController overviewController;
+    private TransactionsController transactionsController;
+    private VisualsController visualsController;
+
+    private Button overviewButton;
+    private Button transactionsButton;
+    private Button visualsButton;
     @Override
     public void start(Stage stage) throws IOException {
-        VBox menu = new VBox();
 
-        Button overviewButton = new Button("Overview");
-        Button transactionsButton = new Button("Transactions");
-        Button visualsButton = new Button("Visuals");
+        overviewButton = new Button("Overview");
+        transactionsButton = new Button("Transactions");
+        visualsButton = new Button("Visuals");
 
-        menu.getChildren().addAll(overviewButton, transactionsButton, visualsButton);
+        overviewController = new OverviewController();
+        transactionsController = new TransactionsController();
+        visualsController = new VisualsController();
 
-        BorderPane root = new BorderPane();
-        root.setLeft(menu);
-        //root.setCenter(contentArea);
+        root = new BorderPane();
 
+        root.setLeft(createMenu());
         // Create the scene with the root layout
         Scene scene = new Scene(root, 800, 600);
 
@@ -35,5 +49,15 @@ public class BudgetTrackerApplication extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+    private void setContent(Node content){
+        root.setCenter(content);
+    }
+
+    private VBox createMenu(){
+        VBox menu = new VBox();
+        menu.getChildren().addAll(overviewButton, transactionsButton, visualsButton);
+        return menu;
     }
 }
