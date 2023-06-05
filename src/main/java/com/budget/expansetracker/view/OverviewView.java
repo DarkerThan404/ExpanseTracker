@@ -9,8 +9,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 public class OverviewView {
@@ -42,6 +40,7 @@ public class OverviewView {
         categoriesBox = new VBox();
         categoriesBox.setSpacing(5);
         Label categoriesLabel = new Label("Categories:");
+
         // Add category items to the categoriesBox
         for (int i = 1; i <= 5; i++) {
             String categoryName = "Category " + i;
@@ -61,7 +60,6 @@ public class OverviewView {
         }
 
         // Add the components to the root VBox
-        //root.getChildren().addAll(balanceBox, categoriesLabel, categoriesBox, transactionsLabel, transactionsBox);
         root.setTop(balanceBox);
         root.setLeft(categoriesBox);
         root.setRight(transactionsBox);
