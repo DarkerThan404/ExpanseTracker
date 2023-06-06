@@ -1,15 +1,16 @@
-/* Button style */
-.button {
-    -fx-background-color: #42a5f5;
-    -fx-text-fill: white;
+
+.toggle-button {
     -fx-font-size: 14px;
-    -fx-pref-width: 100px;
+    -fx-padding: 8px 16px;
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333333;
+    -fx-pref-width: 120px;
     -fx-pref-height: 40px;
 }
 
-.button.active {
-    /* Style for active button */
-    -fx-background-color: #ff0000; /* Example: change background color to red */
+.toggle-button:selected {
+    -fx-background-color: #333333;
+    -fx-text-fill: #ffffff;
 }
 
 /* Text field style */
