@@ -1,10 +1,22 @@
 package com.budget.expansetracker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataStorageManager {
     private static final String TRANSACTION_FILE_PATH = "transactions.csv";
     private static final String CATEGORY_FILE_PATH = "categories.csv";
+
+    private static List<Category> categories = new ArrayList<>();
+
+    public static Category findCategoryByName(String categoryName) {
+        for (Category category : categories) {
+            if (category.getName().equals(categoryName)) {
+                return category;
+            }
+        }
+        return null;
+    }
 
     public static void saveTransaction(Transaction transaction) {
         // Logic to save a transaction to the transaction file
