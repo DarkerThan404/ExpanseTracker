@@ -1,8 +1,10 @@
 package com.budget.expansetracker.view;
 
+import com.budget.expansetracker.controllers.OverviewController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.BorderPane;
@@ -18,8 +20,13 @@ public class OverviewView implements IView {
     private VBox categoriesBox;
     private VBox transactionsBox;
 
-    public OverviewView(){
+    private Button addCategoryButton;
+    private OverviewController controller;
+
+    public OverviewView(OverviewController controller) {
+        this.controller = controller;
         createView();
+
     }
     @Override
     public Node getNode(){
@@ -40,6 +47,12 @@ public class OverviewView implements IView {
         categoriesBox = new VBox();
         categoriesBox.setSpacing(5);
         Label categoriesLabel = new Label("Categories:");
+
+        addCategoryButton = new Button("Add Category");
+        addCategoryButton.setOnAction(event -> controller.handleAddCategoryButton(event));
+
+        categoriesBox.getChildren().add(addCategoryButton);
+
 
         // Add category items to the categoriesBox
         for (int i = 1; i <= 5; i++) {
