@@ -2,7 +2,7 @@ package com.budget.expansetracker;
 
 import com.budget.expansetracker.controllers.OverviewController;
 import com.budget.expansetracker.controllers.TransactionsController;
-import com.budget.expansetracker.controllers.VisualsController;
+import com.budget.expansetracker.controllers.ReportController;
 import javafx.application.Application;
 
 import javafx.scene.Node;
@@ -24,11 +24,12 @@ public class BudgetTrackerApplication extends Application {
 
     private OverviewController overviewController;
     private TransactionsController transactionsController;
-    private VisualsController visualsController;
+    private ReportController reportController;
 
     private ToggleButton overviewButton;
     private ToggleButton transactionsButton;
     private ToggleButton reportButton;
+
     @Override
     public void start(Stage stage) {
 
@@ -48,13 +49,10 @@ public class BudgetTrackerApplication extends Application {
 
         overviewController = new OverviewController();
         transactionsController = new TransactionsController();
-        visualsController = new VisualsController();
+        reportController = new ReportController();
 
         toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                // Handle the selected menu item
-                ToggleButton selectedButton = (ToggleButton) newValue;
-                String selectedItem = selectedButton.getText();
                 if (newValue == overviewButton) {
                     Node overviewView = overviewController.getView();
                     setContent(overviewView);
@@ -62,7 +60,7 @@ public class BudgetTrackerApplication extends Application {
                     Node transactionsView = transactionsController.getView();
                     setContent(transactionsView);
                 } else if (newValue == reportButton) {
-                    Node visualsView = visualsController.getView();
+                    Node visualsView = reportController.getView();
                     setContent(visualsView);
                 }
             }
