@@ -11,7 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class OverviewView {
+public class OverviewView implements IView {
     private BorderPane root;
     private Label balanceLabel;
     private Text balanceText;
@@ -21,7 +21,7 @@ public class OverviewView {
     public OverviewView(){
         createView();
     }
-
+    @Override
     public Node getNode(){
         return root;
     }

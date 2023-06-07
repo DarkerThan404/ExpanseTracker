@@ -39,12 +39,11 @@ public class BudgetTrackerApplication extends Application {
         transactionsButton = new ToggleButton("Transactions");
         reportButton = new ToggleButton("Report");
 
-        // Add ToggleButtons to ToggleGroup
         overviewButton.setToggleGroup(toggleGroup);
         transactionsButton.setToggleGroup(toggleGroup);
         reportButton.setToggleGroup(toggleGroup);
 
-        // Set button1 as initially selected
+        // Set overviewButton as initially selected
         overviewButton.setSelected(true);
 
         overviewController = new OverviewController();

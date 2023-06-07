@@ -1,4 +1,10 @@
 package com.budget.expansetracker.view;
 
-public class ReportView {
+import javafx.scene.Node;
+
+public class ReportView implements IView {
+    @Override
+    public Node getNode() {
+        return null;
+    }
 }
