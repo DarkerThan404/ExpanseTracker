@@ -2,6 +2,8 @@ package com.budget.expansetracker.view;
 
 import com.budget.expansetracker.Category;
 import com.budget.expansetracker.controllers.OverviewController;
+import com.budget.expansetracker.model.CategoryModel;
+import com.budget.expansetracker.model.TransactionModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -25,12 +27,16 @@ public class OverviewView implements IView {
 
     private Button addCategoryButton;
     private OverviewController controller;
+    private CategoryModel categoryModel;
+    private TransactionModel transactionModel;
 
     private ObservableList<Category> categories;
     private ListView<Category> categoryListView;
 
-    public OverviewView(OverviewController controller) {
+    public OverviewView(OverviewController controller, CategoryModel categoryModel, TransactionModel transactionModel) {
         this.controller = controller;
+        this.categoryModel = categoryModel;
+        this.transactionModel = transactionModel;
         createView();
 
     }

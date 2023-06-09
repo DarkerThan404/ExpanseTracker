@@ -3,6 +3,8 @@ package com.budget.expansetracker;
 import com.budget.expansetracker.controllers.OverviewController;
 import com.budget.expansetracker.controllers.TransactionsController;
 import com.budget.expansetracker.controllers.ReportController;
+import com.budget.expansetracker.model.CategoryModel;
+import com.budget.expansetracker.model.TransactionModel;
 import javafx.application.Application;
 
 import javafx.scene.Node;
@@ -21,6 +23,9 @@ public class BudgetTrackerApplication extends Application {
     private BorderPane root;
 
     private ToggleGroup toggleGroup;
+
+    private CategoryModel categoryModel;
+    private TransactionModel transactionModel;
 
     private OverviewController overviewController;
     private TransactionsController transactionsController;
@@ -46,7 +51,10 @@ public class BudgetTrackerApplication extends Application {
         // Set overviewButton as initially selected
         overviewButton.setSelected(true);
 
-        overviewController = new OverviewController();
+        categoryModel = new CategoryModel();
+        transactionModel = new TransactionModel();
+
+        overviewController = new OverviewController(categoryModel, transactionModel);
         transactionsController = new TransactionsController();
         reportController = new ReportController();
 

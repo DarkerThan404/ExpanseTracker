@@ -1,6 +1,8 @@
 package com.budget.expansetracker.controllers;
 
 import com.budget.expansetracker.Category;
+import com.budget.expansetracker.model.CategoryModel;
+import com.budget.expansetracker.model.TransactionModel;
 import com.budget.expansetracker.view.OverviewView;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,8 +22,13 @@ public class OverviewController implements IController {
 
     private static int nextID;
 
-    public OverviewController(){
-        view = new OverviewView(this);
+    private CategoryModel categoryModel;
+    private TransactionModel transactionModel;
+
+    public OverviewController(CategoryModel categoryModel, TransactionModel transactionModel){
+        this.categoryModel = categoryModel;
+        this.transactionModel = transactionModel;
+        view = new OverviewView(this, categoryModel, transactionModel);
         categories = new ArrayList<>();
     }
 
