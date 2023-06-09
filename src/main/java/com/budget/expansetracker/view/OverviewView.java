@@ -30,7 +30,6 @@ public class OverviewView implements IView {
     private CategoryModel categoryModel;
     private TransactionModel transactionModel;
 
-    private ObservableList<Category> categories;
     private ListView<Category> categoryListView;
 
     public OverviewView(OverviewController controller, CategoryModel categoryModel, TransactionModel transactionModel) {
@@ -83,8 +82,6 @@ public class OverviewView implements IView {
 
         categoriesBox.getChildren().add(addCategoryButton);
         categoriesBox.getChildren().add(categoryListView);
-
-
 
 
         // Create and configure the recent transactions component

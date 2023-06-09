@@ -4,14 +4,11 @@ import com.budget.expansetracker.Category;
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
 import com.budget.expansetracker.view.OverviewView;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class OverviewController implements IController {
@@ -77,14 +74,8 @@ public class OverviewController implements IController {
         // Show the dialog and handle the user's input
         Optional<Category> result = dialog.showAndWait();
         result.ifPresent(category -> {
-            // Handle the category name
             // This code will be executed when the user clicks the "Add" button
-            System.out.println("Category Name: " + category.getName());
-            System.out.println("Category goal: " + category.getGoal());
-            System.out.println("Category ID: " + category.getId());
             categoryModel.add(category);
-
-
         });
     }
 
