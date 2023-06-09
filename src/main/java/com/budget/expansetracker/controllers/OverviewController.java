@@ -1,31 +1,43 @@
 package com.budget.expansetracker.controllers;
 
+import com.budget.expansetracker.Category;
 import com.budget.expansetracker.view.OverviewView;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class OverviewController implements IController {
+
     private OverviewView view;
+
+    private List<Category> categories;
+
+    private static int nextID;
 
     public OverviewController(){
         view = new OverviewView(this);
+        categories = new ArrayList<>();
     }
 
     public void handleAddCategoryButton(ActionEvent event){
         // Create the dialog
-        Dialog<String> dialog = new Dialog<>();
+        Dialog<Category> dialog = new Dialog<>();
         dialog.setTitle("Add Category");
         dialog.setHeaderText("Enter the category name:");
 
         // Set the dialog content
         TextField categoryNameField = new TextField();
-        dialog.getDialogPane().setContent(categoryNameField);
+        TextField goalField = new TextField();
+        GridPane grid = new GridPane();
+        grid.addRow(0, new Label("Category Name:"), categoryNameField);
+        grid.addRow(1, new Label("Goal:"), goalField);
+        dialog.getDialogPane().setContent(grid);
 
         // Add buttons to the dialog
         ButtonType addButton = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
@@ -35,18 +47,45 @@ public class OverviewController implements IController {
         // Set the result converter
         dialog.setResultConverter(buttonType -> {
             if (buttonType == addButton) {
-                return categoryNameField.getText();
+                String categoryName = categoryNameField.getText();
+                double goal;
+
+                try {
+                    goal = Double.parseDouble(goalField.getText());
+                } catch (NumberFormatException e) {
+                    // Handle the error
+                    System.err.println("Invalid goal value: " + goalField.getText());
+                    return null;
+                }
+
+                boolean isDuplicate = categories.stream().anyMatch(category -> category.getName().equalsIgnoreCase(categoryName));
+                if (isDuplicate) {
+                    // Handle the duplicate name
+                    System.err.println("Category name already exists: " + categoryName);
+                    return null;
+                }
+                int ID = nextID++;
+                return new Category(ID, categoryName, 0, goal);
             }
             return null;
         });
 
         // Show the dialog and handle the user's input
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(categoryName -> {
+        Optional<Category> result = dialog.showAndWait();
+        result.ifPresent(category -> {
             // Handle the category name
             // This code will be executed when the user clicks the "Add" button
-            System.out.println("Category Name: " + categoryName);
+            System.out.println("Category Name: " + category.getName());
+            System.out.println("Category goal: " + category.getGoal());
+            System.out.println("Category ID: " + category.getId());
+
+            categories.add(category);
+            updateCategories();
         });
+    }
+
+    private void updateCategories(){
+
     }
 
     @Override

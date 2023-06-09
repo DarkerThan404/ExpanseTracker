@@ -1,17 +1,20 @@
 package com.budget.expansetracker.view;
 
+import com.budget.expansetracker.Category;
 import com.budget.expansetracker.controllers.OverviewController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+
+import java.util.List;
 
 public class OverviewView implements IView {
     private BorderPane root;
@@ -22,6 +25,9 @@ public class OverviewView implements IView {
 
     private Button addCategoryButton;
     private OverviewController controller;
+
+    private ObservableList<Category> categories;
+    private ListView<Category> categoryListView;
 
     public OverviewView(OverviewController controller) {
         this.controller = controller;
@@ -43,6 +49,24 @@ public class OverviewView implements IView {
         HBox balanceBox = new HBox(balanceLabel, balanceText);
         balanceBox.setAlignment(Pos.CENTER);
 
+        categories = FXCollections.observableArrayList();
+        categoryListView = new ListView<>();
+        categoryListView.setItems(categories);
+        categoryListView.setCellFactory(param -> new ListCell<>(){
+            @Override
+            protected void updateItem(Category category, boolean empty){
+                super.updateItem(category, empty);
+
+                if( empty || category == null){
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    VBox categoryBox = createCategoryBox(category);
+                    setGraphic(categoryBox);
+                }
+            }
+        });
+
         // Create and configure the categories component
         categoriesBox = new VBox();
         categoriesBox.setSpacing(5);
@@ -52,15 +76,10 @@ public class OverviewView implements IView {
         addCategoryButton.setOnAction(event -> controller.handleAddCategoryButton(event));
 
         categoriesBox.getChildren().add(addCategoryButton);
+        categoriesBox.getChildren().add(categoryListView);
 
 
-        // Add category items to the categoriesBox
-        for (int i = 1; i <= 5; i++) {
-            String categoryName = "Category " + i;
-            double progress = i * 0.2;
-            VBox categoryBox = createCategoryBox(categoryName, progress);
-            categoriesBox.getChildren().add(categoryBox);
-        }
+
 
         // Create and configure the recent transactions component
         transactionsBox = new VBox();
@@ -78,15 +97,15 @@ public class OverviewView implements IView {
         root.setRight(transactionsBox);
     }
 
-    private VBox createCategoryBox(String categoryName, double progress) {
+    private VBox createCategoryBox(Category category) {
         VBox categoryBox = new VBox();
         categoryBox.setSpacing(5);
         categoryBox.setAlignment(Pos.CENTER);
 
-        Label nameLabel = new Label(categoryName);
-        ProgressBar progressBar = new ProgressBar(progress);
+        Label nameLabel = new Label(category.getName());
+        ProgressBar progressBar = new ProgressBar(category.getGoal());
 
-        Label progressLabel = new Label(String.format("%.0f / %.0f", progress * 100, 100.0));
+        Label progressLabel = new Label(String.format("%.0f / %.0f", category.getGoal() * 100, 100.0));
 
         StackPane stackPane = new StackPane();
         stackPane.getChildren().addAll(progressBar, progressLabel);
@@ -96,8 +115,13 @@ public class OverviewView implements IView {
         return categoryBox;
     }
 
-    public void setBalanceText(String balance) {
-        balanceText.setText(balance);
+    public void addCategoryBox(Category category){
+
     }
+
+    public void updateCategories(List<Category> categories){
+        categoriesBox.getChildren().clear();
+    }
+
 
 }
