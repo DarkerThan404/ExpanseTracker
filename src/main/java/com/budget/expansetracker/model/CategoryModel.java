@@ -15,11 +15,15 @@ public class CategoryModel {
         categories.add(category);
     }
 
+    public void prepend(Category category){
+        categories.add(0,category);
+    }
+
     public void remove(Category category){
         categories.remove(category);
     }
 
-    public ObservableList getCategories(){
+    public ObservableList<Category> getCategories(){
         return categories;
     }
 }

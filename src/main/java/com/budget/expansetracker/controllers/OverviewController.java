@@ -18,8 +18,6 @@ public class OverviewController implements IController {
 
     private OverviewView view;
 
-    private List<Category> categories;
-
     private static int nextID;
 
     private CategoryModel categoryModel;
@@ -29,7 +27,6 @@ public class OverviewController implements IController {
         this.categoryModel = categoryModel;
         this.transactionModel = transactionModel;
         view = new OverviewView(this, categoryModel, transactionModel);
-        categories = new ArrayList<>();
     }
 
     public void handleAddCategoryButton(ActionEvent event){
@@ -65,7 +62,7 @@ public class OverviewController implements IController {
                     return null;
                 }
 
-                boolean isDuplicate = categories.stream().anyMatch(category -> category.getName().equalsIgnoreCase(categoryName));
+                boolean isDuplicate = categoryModel.getCategories().stream().anyMatch(category -> category.getName().equalsIgnoreCase(categoryName));
                 if (isDuplicate) {
                     // Handle the duplicate name
                     System.err.println("Category name already exists: " + categoryName);
@@ -85,14 +82,10 @@ public class OverviewController implements IController {
             System.out.println("Category Name: " + category.getName());
             System.out.println("Category goal: " + category.getGoal());
             System.out.println("Category ID: " + category.getId());
+            categoryModel.add(category);
 
-            categories.add(category);
-            updateCategories();
+
         });
-    }
-
-    private void updateCategories(){
-
     }
 
     @Override

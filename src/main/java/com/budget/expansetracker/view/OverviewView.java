@@ -55,9 +55,9 @@ public class OverviewView implements IView {
         HBox balanceBox = new HBox(balanceLabel, balanceText);
         balanceBox.setAlignment(Pos.CENTER);
 
-        categories = FXCollections.observableArrayList();
+        //categories = FXCollections.observableArrayList();
         categoryListView = new ListView<>();
-        categoryListView.setItems(categories);
+        categoryListView.setItems(categoryModel.getCategories());
         categoryListView.setCellFactory(param -> new ListCell<>(){
             @Override
             protected void updateItem(Category category, boolean empty){
@@ -120,14 +120,4 @@ public class OverviewView implements IView {
 
         return categoryBox;
     }
-
-    public void addCategoryBox(Category category){
-
-    }
-
-    public void updateCategories(List<Category> categories){
-        categoriesBox.getChildren().clear();
-    }
-
-
 }

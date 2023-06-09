@@ -1,5 +1,6 @@
 package com.budget.expansetracker.model;
 
+import com.budget.expansetracker.Category;
 import com.budget.expansetracker.Transaction;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,7 +20,7 @@ public class TransactionModel {
         transactions.remove(transaction);
     }
 
-    public ObservableList getTransactions(){
+    public ObservableList<Transaction> getTransactions(){
         return transactions;
     }
 }
