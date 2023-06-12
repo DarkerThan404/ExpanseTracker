@@ -6,9 +6,11 @@ import javafx.collections.ObservableList;
 
 public class CategoryModel {
     private ObservableList<Category> categories;
+    private Category defaultCategory;
 
     public CategoryModel(){
         categories = FXCollections.observableArrayList();
+        defaultCategory = new Category(-9999,"Uncaterorized", 100,100);
     }
 
     public void add(Category category){
@@ -25,5 +27,9 @@ public class CategoryModel {
 
     public ObservableList<Category> getCategories(){
         return categories;
+    }
+
+    public Category getDefaultCategory(){
+        return defaultCategory;
     }
 }
