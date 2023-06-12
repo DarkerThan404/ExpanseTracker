@@ -55,8 +55,8 @@ public class BudgetTrackerApplication extends Application {
         transactionModel = new TransactionModel();
 
         overviewController = new OverviewController(categoryModel, transactionModel);
-        transactionsController = new TransactionsController();
-        reportController = new ReportController();
+        transactionsController = new TransactionsController(categoryModel, transactionModel);
+        reportController = new ReportController(categoryModel, transactionModel);
 
         toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
