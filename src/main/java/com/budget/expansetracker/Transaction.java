@@ -69,6 +69,10 @@ public class Transaction {
         this.amount = amount;
     }
 
+    public TransactionType getType() {
+        return type;
+    }
+
     public void setCategory(Category category) {
         this.category = category;
     }

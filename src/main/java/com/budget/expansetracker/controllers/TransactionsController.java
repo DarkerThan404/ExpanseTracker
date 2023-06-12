@@ -53,6 +53,8 @@ public class TransactionsController implements IController {
         DatePicker dateField = new DatePicker();
         TextField amountField = new TextField();
         ComboBox<Transaction.TransactionType> typeComboBox = new ComboBox<>();
+        typeComboBox.getItems().addAll(Transaction.TransactionType.INCOME, Transaction.TransactionType.EXPENSE);
+
         ComboBox<Category> categoryComboBox = new ComboBox<>();
         TextField descriptionField = new TextField();
 
