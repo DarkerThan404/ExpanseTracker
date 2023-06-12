@@ -5,6 +5,7 @@ import com.budget.expansetracker.Transaction;
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
 import com.budget.expansetracker.view.TransactionsView;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -56,6 +57,16 @@ public class TransactionsController implements IController {
         typeComboBox.getItems().addAll(Transaction.TransactionType.INCOME, Transaction.TransactionType.EXPENSE);
 
         ComboBox<Category> categoryComboBox = new ComboBox<>();
+
+        // Get the observable list of items from the combo box
+        ObservableList<Category> categoryItems = categoryComboBox.getItems();
+
+        // Add the default category to the beginning of the list
+        categoryItems.add(categories.getDefaultCategory());
+
+        // Set the modified list as the combo box's items
+        categoryComboBox.setItems(categoryItems);
+
         TextField descriptionField = new TextField();
 
         GridPane grid = new GridPane();

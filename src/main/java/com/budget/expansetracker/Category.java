@@ -46,4 +46,8 @@ public class Category {
         this.goal = goal;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }
