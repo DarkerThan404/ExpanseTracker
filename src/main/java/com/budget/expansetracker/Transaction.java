@@ -12,7 +12,7 @@ public class Transaction {
     private Category category;
     private String description;
 
-    private enum TransactionType {
+    public enum TransactionType {
         INCOME,
         EXPENSE
     }

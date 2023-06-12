@@ -17,12 +17,12 @@ public class OverviewController implements IController {
 
     private static int nextID;
 
-    private CategoryModel categoryModel;
-    private TransactionModel transactionModel;
+    private CategoryModel categories;
+    private TransactionModel transactions;
 
     public OverviewController(CategoryModel categoryModel, TransactionModel transactionModel){
-        this.categoryModel = categoryModel;
-        this.transactionModel = transactionModel;
+        this.categories = categoryModel;
+        this.transactions = transactionModel;
         view = new OverviewView(this, categoryModel, transactionModel);
     }
 
@@ -59,7 +59,7 @@ public class OverviewController implements IController {
                     return null;
                 }
 
-                boolean isDuplicate = categoryModel.getCategories().stream().anyMatch(category -> category.getName().equalsIgnoreCase(categoryName));
+                boolean isDuplicate = categories.getCategories().stream().anyMatch(category -> category.getName().equalsIgnoreCase(categoryName));
                 if (isDuplicate) {
                     // Handle the duplicate name
                     System.err.println("Category name already exists: " + categoryName);
@@ -75,7 +75,7 @@ public class OverviewController implements IController {
         Optional<Category> result = dialog.showAndWait();
         result.ifPresent(category -> {
             // This code will be executed when the user clicks the "Add" button
-            categoryModel.add(category);
+            categories.add(category);
         });
     }
 

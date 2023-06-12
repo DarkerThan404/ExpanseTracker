@@ -37,7 +37,6 @@ public class OverviewView implements IView {
         this.categoryModel = categoryModel;
         this.transactionModel = transactionModel;
         createView();
-
     }
     @Override
     public Node getNode(){
@@ -78,7 +77,7 @@ public class OverviewView implements IView {
         Label categoriesLabel = new Label("Categories:");
 
         addCategoryButton = new Button("Add Category");
-        addCategoryButton.setOnAction(event -> controller.handleAddCategoryButton(event));
+        addCategoryButton.setOnAction(controller::handleAddCategoryButton);
 
         categoriesBox.getChildren().add(addCategoryButton);
         categoriesBox.getChildren().add(categoryListView);
