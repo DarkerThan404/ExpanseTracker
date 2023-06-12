@@ -10,7 +10,7 @@ public class CategoryModel {
 
     public CategoryModel(){
         categories = FXCollections.observableArrayList();
-        defaultCategory = new Category(-9999,"Uncaterorized", 100,100);
+        defaultCategory = new Category(-9999,"Uncategorized", 100,100);
     }
 
     public void add(Category category){
