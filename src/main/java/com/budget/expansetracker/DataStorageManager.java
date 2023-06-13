@@ -18,7 +18,7 @@ public class DataStorageManager {
     private CategoryModel categories;
     private TransactionModel transactions;
 
-    public CategoryModel getCategories(){
+    public CategoryModel getCategoryModel(){
         if(categories == null){
             try {
                 loadCategoriesFromFile();
@@ -30,7 +30,7 @@ public class DataStorageManager {
         return categories;
     }
 
-    public TransactionModel getTransactions(){
+    public TransactionModel getTransactionModel(){
         if(transactions == null){
             try {
                 loadTransactionsFromFile();

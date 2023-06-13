@@ -24,6 +24,8 @@ public class BudgetTrackerApplication extends Application {
 
     private ToggleGroup toggleGroup;
 
+    private DataStorageManager storageManager;
+
     private CategoryModel categoryModel;
     private TransactionModel transactionModel;
 
@@ -51,8 +53,10 @@ public class BudgetTrackerApplication extends Application {
         // Set overviewButton as initially selected
         overviewButton.setSelected(true);
 
-        categoryModel = new CategoryModel();
-        transactionModel = new TransactionModel();
+        storageManager = new DataStorageManager();
+
+        categoryModel = storageManager.getCategoryModel();
+        transactionModel = storageManager.getTransactionModel();
 
         overviewController = new OverviewController(categoryModel, transactionModel);
         transactionsController = new TransactionsController(categoryModel, transactionModel);
