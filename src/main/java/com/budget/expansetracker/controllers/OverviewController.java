@@ -66,7 +66,7 @@ public class OverviewController implements IController {
                     return null;
                 }
                 int ID = nextID++;
-                return new Category(ID, categoryName, 0, goal);
+                return new Category(ID, categoryName, 0,  goal);
             }
             return null;
         });

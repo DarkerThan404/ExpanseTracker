@@ -18,36 +18,47 @@ public class Category {
         return ID;
     }
 
-    public void setId(int ID) {
-        this.ID = ID;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public double getCurrent() { return current;}
+
+    public double getGoal() {
+        return goal;
+    }
+
+    public void setId(int ID) {
+        this.ID = ID;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public double getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(double current) {
-        this.current = current;
-    }
-
-    public double getGoal() {
-        return goal;
-    }
+    public void setCurrent(double current) { this.current = current; }
 
     public void setGoal(double goal) {
         this.goal = goal;
     }
 
+
+
     @Override
     public String toString() {
         return name;
+    }
+
+    public String toCsv() {
+        return ID + "," + name + "," + current + "," + goal;
+    }
+
+    public static Category fromCsv(String csv) {
+        String[] fields = csv.split(",");
+        int ID = Integer.parseInt(fields[0]);
+        String name = fields[1];
+        double current = Double.parseDouble(fields[2]);
+        double goal = Double.parseDouble(fields[3]);
+        return new Category(ID, name, current, goal);
     }
 }
