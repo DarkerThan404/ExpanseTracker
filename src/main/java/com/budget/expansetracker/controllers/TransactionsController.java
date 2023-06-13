@@ -63,6 +63,7 @@ public class TransactionsController implements IController {
 
         // Add the default category to the beginning of the list
         categoryItems.add(categories.getDefaultCategory());
+        categoryItems.addAll(categories.getCategories());
 
         // Set the modified list as the combo box's items
         categoryComboBox.setItems(categoryItems);

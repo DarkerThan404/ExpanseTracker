@@ -17,6 +17,7 @@ public class TransactionModel {
 
     public void add(Transaction transaction){
         transactions.add(transaction);
+        dataStorageManager.addTransactionToFile(transaction);
     }
 
     public void remove(Transaction transaction){

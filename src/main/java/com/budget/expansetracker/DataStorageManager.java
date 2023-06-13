@@ -60,13 +60,18 @@ public class DataStorageManager {
         }
     }
 
-    public void loadDataFromFile() {
+    public void addTransactionToFile(Transaction transaction) {
+        System.out.println("Saved transaction");
+
+        // Append the new category's data to the categories file
         try {
-            loadCategoriesFromFile();
-            loadTransactionsFromFile();
-            System.out.println("Data loaded successfully.");
-        } catch (IOException | URISyntaxException e) {
-            System.out.println("Error loading data: " + e.getMessage());
+            FileWriter fileWriter = new FileWriter(TRANSACTION_FILE_PATH, true); // Open file in append mode
+            String categoryData = transaction.toCsv(); // Get the CSV representation of the category
+            fileWriter.write(categoryData + "\n"); // Write the data to the file followed by a new line
+            fileWriter.close(); // Close the file
+        } catch (IOException e) {
+            // Handle any exceptions that occur during file writing
+            System.out.println("Error writing data: " + e.getMessage());
         }
     }
 
@@ -92,4 +97,6 @@ public class DataStorageManager {
         String workingDirectory = System.getProperty("user.dir");
         return workingDirectory + File.separator + fileName;
     }
+
+
 }
