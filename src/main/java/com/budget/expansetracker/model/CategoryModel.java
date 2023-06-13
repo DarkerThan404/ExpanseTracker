@@ -33,5 +33,12 @@ public class CategoryModel {
         return defaultCategory;
     }
 
-
+    public Category getCategoryByID(int categoryID){
+        for (Category category : categories) {
+            if (category.getID() == categoryID) {
+                return category;
+            }
+        }
+        return null; // Category not found
+    }
 }

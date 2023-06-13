@@ -1,5 +1,7 @@
 package com.budget.expansetracker;
 
+import com.budget.expansetracker.model.CategoryModel;
+
 import java.time.LocalDate;
 import java.util.StringJoiner;
 
@@ -44,6 +46,8 @@ public class Transaction {
         return amount;
     }
 
+    public TransactionType getType() { return type; }
+
     public Category getCategory() {
         return category;
     }
@@ -69,8 +73,8 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public TransactionType getType() {
-        return type;
+    public void setType(TransactionType type) {
+        this.type = type;
     }
 
     public void setCategory(Category category) {
@@ -81,28 +85,29 @@ public class Transaction {
         this.description = description;
     }
 
-    public String toCsvString() {
-        StringJoiner joiner = new StringJoiner(",");
-        joiner.add(String.valueOf(ID));
-        joiner.add(name);
-        joiner.add(date.toString());
-        joiner.add(String.valueOf(amount));
-        joiner.add(category.getName());
-        joiner.add(type.toString());
-        joiner.add(description);
-        return joiner.toString();
+    public String toCsv() {
+        StringJoiner sj = new StringJoiner(",");
+        sj.add(Integer.toString(ID));
+        sj.add(name);
+        sj.add(date.toString());
+        sj.add(Double.toString(amount));
+        sj.add(type.name());
+        sj.add(Integer.toString(category.getID()));
+        sj.add(description);
+        return sj.toString();
     }
 
-    public static Transaction fromCsvString(String csvString) {
-        String[] fields = csvString.split(",");
-        int ID = Integer.parseInt(fields[0]);
-        String name = fields[1];
-        LocalDate date = LocalDate.parse(fields[2]);
-        double amount = Double.parseDouble(fields[3]);
-        Category category = null; //new Category(fields[4]);
-        TransactionType type = TransactionType.valueOf(fields[5]);
-        String description = fields[6];
+    public static Transaction fromCsv(String csv, CategoryModel categories) {
+        String[] values = csv.split(",");
+        int id = Integer.parseInt(values[0]);
+        String name = values[1];
+        LocalDate date = LocalDate.parse(values[2]);
+        double amount = Double.parseDouble(values[3]);
+        TransactionType type = TransactionType.valueOf(values[4]);
+        int categoryId = Integer.parseInt(values[5]);
+        Category category = categories.getCategoryByID(categoryId);
+        String description = values[6];
 
-        return new Transaction(ID, name, date, amount,  type, category, description);
+        return new Transaction(id, name, date, amount, type, category, description);
     }
 }
