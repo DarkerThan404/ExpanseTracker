@@ -1,14 +1,17 @@
 package com.budget.expansetracker.model;
 
 import com.budget.expansetracker.Category;
+import com.budget.expansetracker.DataStorageManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class CategoryModel {
     private ObservableList<Category> categories;
     private Category defaultCategory;
+    private DataStorageManager dataStorageManager;
 
-    public CategoryModel(){
+    public CategoryModel(DataStorageManager dataStorageManager){
+        this.dataStorageManager = dataStorageManager;
         categories = FXCollections.observableArrayList();
         defaultCategory = new Category(-9999,"Uncategorized", 100,100);
     }

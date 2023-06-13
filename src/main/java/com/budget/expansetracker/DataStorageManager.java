@@ -45,6 +45,19 @@ public class DataStorageManager {
         return transactions;
     }
 
+    public void addCategory(Category category) {
+
+        // Append the new category's data to the categories file
+        try {
+            FileWriter fileWriter = new FileWriter(CATEGORY_FILE_PATH, true); // Open file in append mode
+            String categoryData = category.toCsv(); // Get the CSV representation of the category
+            fileWriter.write(categoryData + "\n"); // Write the data to the file followed by a new line
+            fileWriter.close(); // Close the file
+        } catch (IOException e) {
+            // Handle any exceptions that occur during file writing
+        }
+    }
+
     public void saveDataToFile() {
         try {
             saveCategoriesToFile();
@@ -82,7 +95,7 @@ public class DataStorageManager {
     }
 
     private void loadCategoriesFromFile() throws IOException, URISyntaxException {
-        categories = new CategoryModel();
+        categories = new CategoryModel(this);
         List<String> lines = Files.readAllLines(Paths.get(getDataFilePath(CATEGORY_FILE_PATH)));
         for (String line : lines) {
             Category category = Category.fromCsv(line);
@@ -91,7 +104,7 @@ public class DataStorageManager {
     }
 
     private void loadTransactionsFromFile() throws IOException, URISyntaxException {
-        transactions = new TransactionModel();
+        transactions = new TransactionModel(this);
         List<String> lines = Files.readAllLines(Paths.get(getDataFilePath(TRANSACTION_FILE_PATH)));
         for (String line : lines) {
             Transaction transaction = Transaction.fromCsv(line,categories);
