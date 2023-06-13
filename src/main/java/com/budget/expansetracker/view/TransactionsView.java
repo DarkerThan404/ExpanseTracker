@@ -55,7 +55,15 @@ public class TransactionsView implements IView{
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
         typeColumn.setCellValueFactory(cellData ->  new SimpleObjectProperty<>(cellData.getValue().getType()));
-        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+        categoryColumn.setCellValueFactory(cellData -> {
+            Transaction transaction = cellData.getValue();
+            Category category = transaction.getCategory();
+            if (category == null) {
+                return new SimpleObjectProperty<>(categoryModel.getDefaultCategory());
+            } else {
+                return new SimpleObjectProperty<>(category);
+            }
+        });
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
         categoryColumn.setPrefWidth(120);

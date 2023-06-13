@@ -38,10 +38,6 @@ public class CategoryModel {
         return categories;
     }
 
-    public Category getDefaultCategory(){
-        return defaultCategory;
-    }
-
     public Category getCategoryByID(int categoryID){
         for (Category category : categories) {
             if (category.getID() == categoryID) {
@@ -49,5 +45,9 @@ public class CategoryModel {
             }
         }
         return null; // Category not found
+    }
+
+    public Category getDefaultCategory() {
+        return defaultCategory;
     }
 }
