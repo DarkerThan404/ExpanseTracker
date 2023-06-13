@@ -16,8 +16,14 @@ public class CategoryModel {
         defaultCategory = new Category(-9999,"Uncategorized", 100,100);
     }
 
+    /**
+     * Adds category to category list and writes it into a file. For adding without saving
+     * to file use getCategories first
+     * @param category
+     */
     public void add(Category category){
         categories.add(category);
+        dataStorageManager.addCategoryToFile(category);
     }
 
     public void prepend(Category category){

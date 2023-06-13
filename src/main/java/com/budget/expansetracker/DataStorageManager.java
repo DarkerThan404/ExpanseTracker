@@ -21,7 +21,6 @@ public class DataStorageManager {
     private TransactionModel transactions;
 
     public CategoryModel getCategoryModel(){
-        System.out.println(System.getProperty("user.dir"));
         if(categories == null){
             try {
                 loadCategoriesFromFile();
@@ -45,7 +44,9 @@ public class DataStorageManager {
         return transactions;
     }
 
-    public void addCategory(Category category) {
+    public void addCategoryToFile(Category category) {
+
+        System.out.println("Saved category");
 
         // Append the new category's data to the categories file
         try {
@@ -55,32 +56,7 @@ public class DataStorageManager {
             fileWriter.close(); // Close the file
         } catch (IOException e) {
             // Handle any exceptions that occur during file writing
-        }
-    }
-
-    public void saveDataToFile() {
-        try {
-            saveCategoriesToFile();
-            saveTransactionsToFile();
-            System.out.println("Data saved successfully.");
-        } catch (IOException e) {
-            System.out.println("Error saving data: " + e.getMessage());
-        }
-    }
-
-    private void saveCategoriesToFile() throws IOException {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(CATEGORY_FILE_PATH))) {
-            for (Category category : categories.getCategories()) {
-                writer.println(category.toCsv());
-            }
-        }
-    }
-
-    private void saveTransactionsToFile() throws IOException {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(TRANSACTION_FILE_PATH))) {
-            for (Transaction transaction : transactions.getTransactions()) {
-                writer.println(transaction.toCsv());
-            }
+            System.out.println("Error writing data: " + e.getMessage());
         }
     }
 
@@ -99,7 +75,7 @@ public class DataStorageManager {
         List<String> lines = Files.readAllLines(Paths.get(getDataFilePath(CATEGORY_FILE_PATH)));
         for (String line : lines) {
             Category category = Category.fromCsv(line);
-            categories.add(category);
+            categories.getCategories().add(category);
         }
     }
 
@@ -108,7 +84,7 @@ public class DataStorageManager {
         List<String> lines = Files.readAllLines(Paths.get(getDataFilePath(TRANSACTION_FILE_PATH)));
         for (String line : lines) {
             Transaction transaction = Transaction.fromCsv(line,categories);
-            transactions.add(transaction);
+            transactions.getTransactions().add(transaction);
         }
     }
 
