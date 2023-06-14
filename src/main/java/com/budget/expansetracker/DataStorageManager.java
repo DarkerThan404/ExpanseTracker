@@ -19,6 +19,12 @@ public class DataStorageManager {
     private CategoryModel categories;
     private TransactionModel transactions;
 
+    public DataStorageManager(){
+        loadDataFromFiles();
+        calculateCurrentForAllCategories();
+    }
+
+
     public CategoryModel getCategoryModel(){
         if(categories == null){
             try {
@@ -92,8 +98,36 @@ public class DataStorageManager {
         }
     }
 
+    public void loadDataFromFiles() {
+        try {
+            loadCategoriesFromFile();
+            loadTransactionsFromFile();
+        } catch (IOException | URISyntaxException e) {
+            System.out.println("Error loading data from files: " + e.getMessage());
+        }
+    }
+
     private String getDataFilePath(String fileName) {
         String workingDirectory = System.getProperty("user.dir");
         return workingDirectory + File.separator + fileName;
+    }
+
+    public void calculateCurrentForAllCategories() {
+        for (Category category : categories.getCategories()) {
+            double current = calculateCurrentForCategory(category);
+            category.setCurrent(current);
+        }
+    }
+
+    private double calculateCurrentForCategory(Category category) {
+        double total = 0.0;
+        for (Transaction transaction : transactions.getTransactions()) {
+            if (transaction.getCategory() == category) {
+                if (transaction.getType() == Transaction.TransactionType.EXPENSE) {
+                    total += transaction.getAmount();
+                }
+            }
+        }
+        return total;
     }
 }

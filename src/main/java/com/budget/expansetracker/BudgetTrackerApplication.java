@@ -3,20 +3,15 @@ package com.budget.expansetracker;
 import com.budget.expansetracker.controllers.OverviewController;
 import com.budget.expansetracker.controllers.TransactionsController;
 import com.budget.expansetracker.controllers.ReportController;
-import com.budget.expansetracker.model.CategoryModel;
-import com.budget.expansetracker.model.TransactionModel;
 import javafx.application.Application;
 
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class BudgetTrackerApplication extends Application {
 
