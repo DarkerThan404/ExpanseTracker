@@ -26,9 +26,6 @@ public class BudgetTrackerApplication extends Application {
 
     private DataStorageManager storageManager;
 
-    private CategoryModel categoryModel;
-    private TransactionModel transactionModel;
-
     private OverviewController overviewController;
     private TransactionsController transactionsController;
     private ReportController reportController;
@@ -55,12 +52,9 @@ public class BudgetTrackerApplication extends Application {
 
         storageManager = new DataStorageManager();
 
-        categoryModel = storageManager.getCategoryModel();
-        transactionModel = storageManager.getTransactionModel();
-
-        overviewController = new OverviewController(categoryModel, transactionModel);
-        transactionsController = new TransactionsController(categoryModel, transactionModel);
-        reportController = new ReportController(categoryModel, transactionModel);
+        overviewController = new OverviewController(storageManager);
+        transactionsController = new TransactionsController(storageManager);
+        reportController = new ReportController(storageManager);
 
         toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {

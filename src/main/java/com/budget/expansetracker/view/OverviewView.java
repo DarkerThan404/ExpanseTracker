@@ -4,6 +4,8 @@ import com.budget.expansetracker.Category;
 import com.budget.expansetracker.controllers.OverviewController;
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -105,9 +107,21 @@ public class OverviewView implements IView {
         categoryBox.setAlignment(Pos.CENTER);
 
         Label nameLabel = new Label(category.getName());
-        ProgressBar progressBar = new ProgressBar(category.getGoal());
+        ProgressBar progressBar = new ProgressBar();
 
-        Label progressLabel = new Label(String.format("%.0f / %.0f", category.getGoal() * 100, 100.0));
+        // Create properties for current and goal
+        SimpleDoubleProperty currentProperty = new SimpleDoubleProperty(category.getCurrent());
+        SimpleDoubleProperty goalProperty = new SimpleDoubleProperty(category.getGoal());
+
+        progressBar.progressProperty().bind(
+                Bindings.createDoubleBinding(() -> {
+                    double current = category.getCurrent();
+                    double goal = category.getGoal();
+                    return current / goal;
+                }, currentProperty, goalProperty)
+        );
+
+        Label progressLabel = new Label(String.format("%.0f / %.0f", category.getCurrent(), category.getGoal()));
 
         StackPane stackPane = new StackPane();
         stackPane.getChildren().addAll(progressBar, progressLabel);

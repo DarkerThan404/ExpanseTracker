@@ -6,7 +6,6 @@ import com.budget.expansetracker.model.TransactionModel;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -97,6 +96,4 @@ public class DataStorageManager {
         String workingDirectory = System.getProperty("user.dir");
         return workingDirectory + File.separator + fileName;
     }
-
-
 }

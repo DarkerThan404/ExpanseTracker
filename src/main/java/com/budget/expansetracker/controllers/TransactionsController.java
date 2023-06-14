@@ -1,6 +1,7 @@
 package com.budget.expansetracker.controllers;
 
 import com.budget.expansetracker.Category;
+import com.budget.expansetracker.DataStorageManager;
 import com.budget.expansetracker.Transaction;
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
@@ -19,15 +20,18 @@ public class TransactionsController implements IController {
 
     private TransactionsView view;
 
+    private DataStorageManager storageManager;
+
     private CategoryModel categories;
     private TransactionModel transactions;
 
     private int newID;
 
-    public TransactionsController(CategoryModel categoryModel, TransactionModel transactionModel){
-        this.categories = categoryModel;
-        this.transactions = transactionModel;
-        view = new TransactionsView(this, categoryModel, transactionModel);
+    public TransactionsController(DataStorageManager storageManager){
+        this.storageManager = storageManager;
+        categories = storageManager.getCategoryModel();
+        transactions = storageManager.getTransactionModel();
+        view = new TransactionsView(this, categories, transactions);
     }
     @Override
     public Node getView() {

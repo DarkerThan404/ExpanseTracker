@@ -1,6 +1,7 @@
 package com.budget.expansetracker.controllers;
 
 import com.budget.expansetracker.Category;
+import com.budget.expansetracker.DataStorageManager;
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
 import com.budget.expansetracker.view.OverviewView;
@@ -17,13 +18,16 @@ public class OverviewController implements IController {
 
     private static int nextID;
 
+    private DataStorageManager storageManager;
+
     private CategoryModel categories;
     private TransactionModel transactions;
 
-    public OverviewController(CategoryModel categoryModel, TransactionModel transactionModel){
-        this.categories = categoryModel;
-        this.transactions = transactionModel;
-        view = new OverviewView(this, categoryModel, transactionModel);
+    public OverviewController(DataStorageManager storageManager){
+        this.storageManager = storageManager;
+        categories = storageManager.getCategoryModel();
+        transactions = storageManager.getTransactionModel();
+        view = new OverviewView(this, categories, transactions);
     }
 
     public void handleAddCategoryButton(ActionEvent event){
