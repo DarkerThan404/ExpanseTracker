@@ -138,4 +138,19 @@ public class DataStorageManager {
         }
         return total;
     }
+
+    public double calculateInitialBalance() {
+        double incomeTotal = 0.0;
+        double expenseTotal = 0.0;
+
+        for (Transaction transaction : transactions.getTransactions()) {
+            if (transaction.getType() == Transaction.TransactionType.INCOME) {
+                incomeTotal += transaction.getAmount();
+            } else if (transaction.getType() == Transaction.TransactionType.EXPENSE) {
+                expenseTotal += transaction.getAmount();
+            }
+        }
+
+        return incomeTotal - expenseTotal;
+    }
 }

@@ -12,10 +12,13 @@ public class TransactionModel {
 
     private int nextID;
 
+    private double balance;
+
     public TransactionModel(DataStorageManager dataStorageManager){
         this.dataStorageManager = dataStorageManager;
         transactions = FXCollections.observableArrayList();
         nextID = 0;
+        balance = 0;
     }
 
     /**
@@ -23,6 +26,29 @@ public class TransactionModel {
      * @param nextID
      */
     public void setNextID(int nextID){ this.nextID = nextID;}
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void calculateInitialBalance() {
+        balance = 0.0;
+        for (Transaction transaction : transactions) {
+            if (transaction.getType() == Transaction.TransactionType.INCOME) {
+                balance += transaction.getAmount();
+            } else {
+                balance -= transaction.getAmount();
+            }
+        }
+    }
+
+    private void updateBalance(Transaction transaction) {
+        if (transaction.getType() == Transaction.TransactionType.INCOME) {
+            balance += transaction.getAmount();
+        } else {
+            balance -= transaction.getAmount();
+        }
+    }
 
     public void add(Transaction transaction){
         transaction.setID(nextID++);

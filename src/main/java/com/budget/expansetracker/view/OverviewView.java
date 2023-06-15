@@ -5,6 +5,7 @@ import com.budget.expansetracker.controllers.OverviewController;
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,8 +23,11 @@ import java.util.List;
 
 public class OverviewView implements IView {
     private BorderPane root;
+
     private Label balanceLabel;
     private Text balanceText;
+    private DoubleProperty balanceProperty;
+
     private VBox categoriesBox;
     private VBox transactionsBox;
 
@@ -49,10 +53,16 @@ public class OverviewView implements IView {
         root = new BorderPane();
         root.setPadding(new Insets(10));
 
+        transactionModel.calculateInitialBalance();
         // Create and configure the balance component
         balanceLabel = new Label("Balance:");
-        balanceText = new Text("$5000"); // Replace with your balance value
-        HBox balanceBox = new HBox(balanceLabel, balanceText);
+        balanceProperty = new SimpleDoubleProperty();
+        balanceLabel.textProperty().bind(balanceProperty.asString());
+
+        double initialBalance = transactionModel.getBalance();
+        balanceProperty.set(initialBalance);
+
+        HBox balanceBox = new HBox(balanceLabel);
         balanceBox.setAlignment(Pos.CENTER);
 
         //categories = FXCollections.observableArrayList();
