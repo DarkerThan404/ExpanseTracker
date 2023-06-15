@@ -80,7 +80,7 @@ public class Category {
     private static double parsePositiveDouble(String value) {
         try {
             double number = Double.parseDouble(value);
-            if (number <= 0) {
+            if (number < 0) {
                 throw new IllegalArgumentException("Value must be a positive double: " + value);
             }
             return number;
