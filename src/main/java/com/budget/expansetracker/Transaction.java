@@ -3,6 +3,7 @@ package com.budget.expansetracker;
 import com.budget.expansetracker.model.CategoryModel;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.StringJoiner;
 
 public class Transaction {
@@ -99,15 +100,62 @@ public class Transaction {
 
     public static Transaction fromCsv(String csv, CategoryModel categories) {
         String[] values = csv.split(",");
-        int id = Integer.parseInt(values[0]);
-        String name = values[1];
-        LocalDate date = LocalDate.parse(values[2]);
-        double amount = Double.parseDouble(values[3]);
-        TransactionType type = TransactionType.valueOf(values[4]);
-        int categoryId = Integer.parseInt(values[5]);
+        int id = parseInteger(values[0]);
+        String name = validateName(values[1]);
+        LocalDate date = parseDate(values[2]);
+        double amount = parsePositiveDouble(values[3]);
+        TransactionType type = parseTransactionType(values[4]);
+        int categoryId = parseInteger(values[5]);
         Category category = categories.getCategoryByID(categoryId);
-        String description = values[6];
+        String description = null;
+
+        if (values.length > 6 && !values[6].isEmpty()) {
+            description = values[6];
+        }
 
         return new Transaction(id, name, date, amount, type, category, description);
+    }
+
+    private static int parseInteger(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid integer value: " + value, e);
+        }
+    }
+
+    private static String validateName(String value) {
+        if (value.isEmpty()) {
+            throw new IllegalArgumentException("Invalid name: " + value);
+        }
+        return value;
+    }
+
+    private static LocalDate parseDate(String value) {
+        try {
+            return LocalDate.parse(value);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date value: " + value, e);
+        }
+    }
+
+    private static double parsePositiveDouble(String value) {
+        try {
+            double amount = Double.parseDouble(value);
+            if (amount <= 0) {
+                throw new IllegalArgumentException("Amount must be a positive double: " + value);
+            }
+            return amount;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid double value: " + value, e);
+        }
+    }
+
+    private static TransactionType parseTransactionType(String value) {
+        try {
+            return TransactionType.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid transaction type: " + value, e);
+        }
     }
 }
