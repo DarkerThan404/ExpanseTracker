@@ -55,10 +55,37 @@ public class Category {
 
     public static Category fromCsv(String csv) {
         String[] fields = csv.split(",");
-        int ID = Integer.parseInt(fields[0]);
-        String name = fields[1];
-        double current = Double.parseDouble(fields[2]);
-        double goal = Double.parseDouble(fields[3]);
+        int ID = parseInteger(fields[0]);
+        String name = validateName(fields[1]);
+        double current = parsePositiveDouble(fields[2]);
+        double goal = parsePositiveDouble(fields[3]);
         return new Category(ID, name, current, goal);
+    }
+
+    private static int parseInteger(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid integer value: " + value, e);
+        }
+    }
+
+    private static String validateName(String value) {
+        if (value.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be empty.");
+        }
+        return value;
+    }
+
+    private static double parsePositiveDouble(String value) {
+        try {
+            double number = Double.parseDouble(value);
+            if (number <= 0) {
+                throw new IllegalArgumentException("Value must be a positive double: " + value);
+            }
+            return number;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid double value: " + value, e);
+        }
     }
 }
