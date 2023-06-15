@@ -82,20 +82,28 @@ public class DataStorageManager {
 
     private void loadCategoriesFromFile() throws IOException, URISyntaxException {
         categories = new CategoryModel(this);
+
+        int highestID = 0;
+
         List<String> lines = Files.readAllLines(Paths.get(getDataFilePath(CATEGORY_FILE_PATH)));
         for (String line : lines) {
             Category category = Category.fromCsv(line);
+            highestID = Math.max(highestID, category.getID());
             categories.getCategories().add(category);
         }
+        categories.setNextID(highestID);
     }
 
     private void loadTransactionsFromFile() throws IOException, URISyntaxException {
         transactions = new TransactionModel(this);
+        int highestID = 0;
         List<String> lines = Files.readAllLines(Paths.get(getDataFilePath(TRANSACTION_FILE_PATH)));
         for (String line : lines) {
             Transaction transaction = Transaction.fromCsv(line,categories);
+            highestID = Math.max(highestID, transaction.getID());
             transactions.getTransactions().add(transaction);
         }
+        transactions.setNextID(highestID);
     }
 
     public void loadDataFromFiles() {

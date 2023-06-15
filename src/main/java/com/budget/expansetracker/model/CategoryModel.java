@@ -7,13 +7,17 @@ import javafx.collections.ObservableList;
 
 public class CategoryModel {
     private ObservableList<Category> categories;
+
     private Category defaultCategory;
     private DataStorageManager dataStorageManager;
+
+    private int nextID;
 
     public CategoryModel(DataStorageManager dataStorageManager){
         this.dataStorageManager = dataStorageManager;
         categories = FXCollections.observableArrayList();
         defaultCategory = new Category(-9999,"Uncategorized", 100,100);
+        nextID = 0;
     }
 
     /**
@@ -22,9 +26,16 @@ public class CategoryModel {
      * @param category
      */
     public void add(Category category){
+        category.setId(nextID++);
         categories.add(category);
         dataStorageManager.addCategoryToFile(category);
     }
+
+    /**
+     * Called once at start of the application to set nextID to highest possible number
+     * @param nextID
+     */
+    public void setNextID(int nextID){ this.nextID = nextID;}
 
     public void prepend(Category category){
         categories.add(0,category);
