@@ -91,7 +91,7 @@ public class DataStorageManager {
             highestID = Math.max(highestID, category.getID());
             categories.getCategories().add(category);
         }
-        categories.setNextID(highestID);
+        categories.setNextID(highestID + 1);
     }
 
     private void loadTransactionsFromFile() throws IOException, URISyntaxException {
@@ -103,7 +103,7 @@ public class DataStorageManager {
             highestID = Math.max(highestID, transaction.getID());
             transactions.getTransactions().add(transaction);
         }
-        transactions.setNextID(highestID);
+        transactions.setNextID(highestID + 1);
     }
 
     public void loadDataFromFiles() {

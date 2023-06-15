@@ -1,7 +1,10 @@
-0,TESCO,2023-05-09,3300.0,EXPENSE,-9999,Jídlo
-0,SEGA,2023-05-15,300.0,EXPENSE,0,Hraní na konsoli
-0,WOK,2023-05-12,150.0,EXPENSE,0,rýžové nudle s omáčkou teriaky
-0,Blizzard,2023-06-05,500.0,EXPENSE,0,Hra na konzoli
+0,TESCO,2023-05-09,3300.0,EXPENSE,1,Jídlo
+7,SEGA,2023-05-15,300.0,EXPENSE,0,Hraní na konsoli
+9,WOK,2023-05-12,150.0,EXPENSE,1,rýžové nudle s omáčkou teriaky
+10,Blizzard,2023-06-05,500.0,EXPENSE,0,Hra na konzoli
 1,Steam,2023-06-22,800.0,EXPENSE,0,Hra na konzoli
-2,Billa,2023-06-26,1900.0,EXPENSE,0,Koupě ve velkoobchodě
+2,Billa,2023-06-26,1900.0,EXPENSE,1,Koupě ve velkoobchodě
 3,Kadeřník,2023-06-01,200.0,EXPENSE,-9999,úprava vlasů
+4,Steam,2023-05-10,500.0,EXPENSE,0,Hra na steamu
+5,TESCO,2023-05-12,1550.0,EXPENSE,1,Nákup ve velkoobchodě
+6,PS5,2023-05-19,185.0,EXPENSE,0,Hra na playstation ve slevě
