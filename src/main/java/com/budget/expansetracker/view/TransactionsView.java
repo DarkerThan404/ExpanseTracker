@@ -32,6 +32,7 @@ public class TransactionsView implements IView{
     private Button deleteButton;
     private Button confirmDeleteButton;
     private TableView<Transaction> transactionTableView;
+    private VBox deleteContainer;
 
     private boolean deleteMode = false;
 
@@ -53,7 +54,7 @@ public class TransactionsView implements IView{
         createButtons();
         initializeDeleteMode();
 
-        root.getChildren().addAll(addTransactionButton, transactionTableView);
+        root.getChildren().addAll(addTransactionButton, deleteContainer, transactionTableView);
     }
 
     private void createTableView(){
@@ -106,7 +107,7 @@ public class TransactionsView implements IView{
         addTransactionButton = new Button("Add Transaction");
         addTransactionButton.setOnAction(controller::handleAddTransactionButton);
 
-        VBox deleteContainer = new VBox(10);
+        deleteContainer = new VBox(10);
         deleteContainer.setAlignment(Pos.CENTER);
 
         deleteButton = new Button("Delete");
@@ -135,7 +136,6 @@ public class TransactionsView implements IView{
         confirmDeleteButton.setVisible(false);
 
         deleteContainer.getChildren().addAll(deleteButton, confirmDeleteButton);
-        root.getChildren().addAll(deleteContainer);
     }
 
     private void initializeDeleteMode(){
