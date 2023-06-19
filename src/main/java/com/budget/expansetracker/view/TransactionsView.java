@@ -5,14 +5,17 @@ import com.budget.expansetracker.Transaction;
 import com.budget.expansetracker.controllers.TransactionsController;
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
 import java.time.LocalDate;
 
@@ -50,10 +53,9 @@ public class TransactionsView implements IView{
         TableColumn<Transaction, Transaction.TransactionType> typeColumn = new TableColumn<>("Type");
         TableColumn<Transaction, Category> categoryColumn = new TableColumn<>("Category");
         TableColumn<Transaction, String> descriptionColumn = new TableColumn<>("Description");
-        TableColumn<Transaction, Void> editColumn = new TableColumn<>("Edit");
 
-        //idColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+        nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
         typeColumn.setCellValueFactory(cellData ->  new SimpleObjectProperty<>(cellData.getValue().getType()));
@@ -67,35 +69,25 @@ public class TransactionsView implements IView{
             }
         });
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        editColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button editButton = new Button("Edit");
 
-            {
-                editButton.setOnAction(event -> {
-                    Transaction transaction = getTableRow().getItem();
-                    if (transaction != null) {
-                        // Handle the edit action for the selected transaction
-                        // Implement your logic here
-                        System.out.println("Edit transaction: " + transaction.getName());
-                    }
-                });
-            }
+        nameColumn.setOnEditCommit(event -> {
+            // Get the edited value
+            String editedName = event.getNewValue();
 
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(editButton);
-                }
-            }
+            // Get the transaction being edited
+            Transaction editedTransaction = event.getRowValue();
+
+            // Update the transaction with the edited name
+            editedTransaction.setName(editedName);
         });
+
+        nameColumn.setEditable(true);
+        transactionTableView.setEditable(true);
 
         categoryColumn.setPrefWidth(120);
         descriptionColumn.setPrefWidth(200);
 
-        transactionTableView.getColumns().addAll(nameColumn, dateColumn, amountColumn, typeColumn, categoryColumn, descriptionColumn, editColumn);
+        transactionTableView.getColumns().addAll(nameColumn, dateColumn, amountColumn, typeColumn, categoryColumn, descriptionColumn);
 
         transactionTableView.setItems(transactionModel.getTransactions());
 
