@@ -8,6 +8,7 @@ import com.budget.expansetracker.model.TransactionModel;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -49,6 +50,7 @@ public class TransactionsView implements IView{
         TableColumn<Transaction, Transaction.TransactionType> typeColumn = new TableColumn<>("Type");
         TableColumn<Transaction, Category> categoryColumn = new TableColumn<>("Category");
         TableColumn<Transaction, String> descriptionColumn = new TableColumn<>("Description");
+        TableColumn<Transaction, Void> editColumn = new TableColumn<>("Edit");
 
         //idColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -65,11 +67,36 @@ public class TransactionsView implements IView{
             }
         });
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        editColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button editButton = new Button("Edit");
+
+            {
+                editButton.setOnAction(event -> {
+                    Transaction transaction = getTableRow().getItem();
+                    if (transaction != null) {
+                        // Handle the edit action for the selected transaction
+                        // Implement your logic here
+                        System.out.println("Edit transaction: " + transaction.getName());
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(editButton);
+                }
+            }
+        });
 
         categoryColumn.setPrefWidth(120);
         descriptionColumn.setPrefWidth(200);
 
-        transactionTableView.getColumns().addAll(nameColumn, dateColumn, amountColumn, typeColumn, categoryColumn, descriptionColumn);
+        transactionTableView.getColumns().addAll(nameColumn, dateColumn, amountColumn, typeColumn, categoryColumn, descriptionColumn, editColumn);
+
         transactionTableView.setItems(transactionModel.getTransactions());
 
         root.getChildren().addAll(addTransactionButton, transactionTableView);
