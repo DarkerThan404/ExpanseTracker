@@ -6,6 +6,8 @@ import com.budget.expansetracker.Transaction;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.List;
+
 public class TransactionModel {
     private ObservableList<Transaction> transactions;
     private DataStorageManager dataStorageManager;
@@ -62,5 +64,9 @@ public class TransactionModel {
 
     public ObservableList<Transaction> getTransactions(){
         return transactions;
+    }
+
+    public void removeTranasactions(List<Transaction> selectedTransactions) {
+        transactions.removeAll(selectedTransactions);
     }
 }
