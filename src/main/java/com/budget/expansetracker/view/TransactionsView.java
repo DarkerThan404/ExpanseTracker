@@ -32,7 +32,9 @@ public class TransactionsView implements IView{
     private Button addTransactionButton;
     private Button deleteButton;
     private Button confirmDeleteButton;
+    private Button cancelButton;
     private TableView<Transaction> transactionTableView;
+    private HBox buttonContainer;
     private HBox confirmCancelContainer;
 
     private boolean deleteMode = false;
@@ -55,7 +57,7 @@ public class TransactionsView implements IView{
         createButtons();
         initializeDeleteMode();
 
-        root.getChildren().addAll(addTransactionButton, transactionTableView, confirmCancelContainer);
+        root.getChildren().addAll(buttonContainer, transactionTableView, confirmCancelContainer);
     }
 
     private void createTableView(){
@@ -105,14 +107,20 @@ public class TransactionsView implements IView{
         transactionTableView.setItems(transactionModel.getTransactions());
     }
     private void createButtons(){
+        buttonContainer = new HBox(10);
+
         addTransactionButton = new Button("Add Transaction");
         addTransactionButton.setOnAction(controller::handleAddTransactionButton);
+
+        deleteButton = new Button("Delete");
+
+        buttonContainer.getChildren().addAll(addTransactionButton, deleteButton);
 
         confirmCancelContainer = new HBox(10);
         confirmCancelContainer.setAlignment(Pos.BOTTOM_RIGHT);
 
-        deleteButton = new Button("Delete");
         confirmDeleteButton = new Button("Confirm Delete");
+        cancelButton = new Button("Cancel");
 
         deleteButton.setOnAction(event -> {
             deleteMode = true;
@@ -136,7 +144,7 @@ public class TransactionsView implements IView{
         });
         confirmDeleteButton.setVisible(false);
 
-        confirmCancelContainer.getChildren().addAll(deleteButton, confirmDeleteButton);
+        confirmCancelContainer.getChildren().addAll(confirmDeleteButton, cancelButton);
     }
 
     private void initializeDeleteMode(){
