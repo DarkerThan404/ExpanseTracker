@@ -14,6 +14,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
@@ -32,7 +33,7 @@ public class TransactionsView implements IView{
     private Button deleteButton;
     private Button confirmDeleteButton;
     private TableView<Transaction> transactionTableView;
-    private VBox deleteContainer;
+    private HBox confirmCancelContainer;
 
     private boolean deleteMode = false;
 
@@ -54,7 +55,7 @@ public class TransactionsView implements IView{
         createButtons();
         initializeDeleteMode();
 
-        root.getChildren().addAll(addTransactionButton, deleteContainer, transactionTableView);
+        root.getChildren().addAll(addTransactionButton, transactionTableView, confirmCancelContainer);
     }
 
     private void createTableView(){
@@ -107,8 +108,8 @@ public class TransactionsView implements IView{
         addTransactionButton = new Button("Add Transaction");
         addTransactionButton.setOnAction(controller::handleAddTransactionButton);
 
-        deleteContainer = new VBox(10);
-        deleteContainer.setAlignment(Pos.CENTER);
+        confirmCancelContainer = new HBox(10);
+        confirmCancelContainer.setAlignment(Pos.BOTTOM_RIGHT);
 
         deleteButton = new Button("Delete");
         confirmDeleteButton = new Button("Confirm Delete");
@@ -117,7 +118,7 @@ public class TransactionsView implements IView{
             deleteMode = true;
             deleteButton.setVisible(false);
             confirmDeleteButton.setVisible(true);
-            deleteContainer.getChildren().add(transactionTableView);
+            confirmCancelContainer.getChildren().add(transactionTableView);
         });
 
         confirmDeleteButton.setOnAction(event -> {
@@ -131,11 +132,11 @@ public class TransactionsView implements IView{
             deleteMode = false;
             deleteButton.setVisible(true);
             confirmDeleteButton.setVisible(false);
-            deleteContainer.getChildren().remove(transactionTableView);
+            confirmCancelContainer.getChildren().remove(transactionTableView);
         });
         confirmDeleteButton.setVisible(false);
 
-        deleteContainer.getChildren().addAll(deleteButton, confirmDeleteButton);
+        confirmCancelContainer.getChildren().addAll(deleteButton, confirmDeleteButton);
     }
 
     private void initializeDeleteMode(){
