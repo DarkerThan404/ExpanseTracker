@@ -12,20 +12,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.converter.DoubleStringConverter;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.DatePicker;
-import javafx.util.Callback;
 
 public class TransactionsView implements IView{
 
@@ -75,96 +69,21 @@ public class TransactionsView implements IView{
         TableColumn<Transaction, Category> categoryColumn = new TableColumn<>("Category");
         TableColumn<Transaction, String> descriptionColumn = new TableColumn<>("Description");
 
+        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        nameColumn.setOnEditCommit(event -> {
-            Transaction transaction = event.getRowValue();
-            transaction.setName(event.getNewValue());
-        });
-        dateColumn.setCellFactory(new Callback<TableColumn<Transaction, LocalDate>, TableCell<Transaction, LocalDate>>() {
-            @Override
-            public TableCell<Transaction, LocalDate> call(TableColumn<Transaction, LocalDate> column) {
-                return new TableCell<Transaction, LocalDate>() {
-                    private final DatePicker datePicker = new DatePicker();
-
-                    {
-                        // Commit the edited value on Enter key press or when the date picker loses focus
-                        datePicker.setOnAction(event -> commitEdit(datePicker.getValue()));
-                        datePicker.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
-                            if (!isFocused) {
-                                commitEdit(datePicker.getValue());
-                            }
-                        });
-                    }
-
-                    @Override
-                    protected void updateItem(LocalDate date, boolean empty) {
-                        super.updateItem(date, empty);
-
-                        if (empty || date == null) {
-                            setText(null);
-                            setGraphic(null);
-                        } else {
-                            setText(date.toString());
-                            setGraphic(null);
-                        }
-                    }
-
-                    @Override
-                    public void startEdit() {
-                        super.startEdit();
-                        LocalDate value = getItem();
-                        if (value != null) {
-                            datePicker.setValue(value);
-                        }
-                        setText(null);
-                        setGraphic(datePicker);
-                    }
-
-                    @Override
-                    public void cancelEdit() {
-                        super.cancelEdit();
-                        setText(getItem().toString());
-                        setGraphic(null);
-                    }
-
-                    @Override
-                    public void commitEdit(LocalDate newValue) {
-                        super.commitEdit(newValue);
-                        if (newValue != null) {
-                            setText(newValue.toString());
-                        }
-                        setGraphic(null);
-                    }
-                };
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        typeColumn.setCellValueFactory(cellData ->  new SimpleObjectProperty<>(cellData.getValue().getType()));
+        categoryColumn.setCellValueFactory(cellData -> {
+            Transaction transaction = cellData.getValue();
+            Category category = transaction.getCategory();
+            if (category == null) {
+                return new SimpleObjectProperty<>(categoryModel.getDefaultCategory());
+            } else {
+                return new SimpleObjectProperty<>(category);
             }
         });
-        dateColumn.setOnEditCommit(event -> {
-            Transaction transaction = event.getRowValue();
-            transaction.setDate(event.getNewValue());
-        });
-        amountColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-        amountColumn.setOnEditCommit(event -> {
-            Transaction transaction = event.getRowValue();
-            transaction.setAmount(event.getNewValue());
-        });
-        typeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(Transaction.TransactionType.values()));
-        typeColumn.setOnEditCommit(event -> {
-            Transaction transaction = event.getRowValue();
-            transaction.setType(event.getNewValue());
-        });
-        categoryColumn.setCellFactory(ComboBoxTableCell.forTableColumn(categoryModel.getCategories()));
-        categoryColumn.setOnEditCommit(event -> {
-            Transaction transaction = event.getRowValue();
-            transaction.setCategory(event.getNewValue());
-        });
-        descriptionColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        descriptionColumn.setOnEditCommit(event -> {
-            Transaction transaction = event.getRowValue();
-            transaction.setDescription(event.getNewValue());
-        });
-
-        nameColumn.setEditable(true);
-        transactionTableView.setEditable(true);
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
         categoryColumn.setPrefWidth(120);
         descriptionColumn.setPrefWidth(200);
