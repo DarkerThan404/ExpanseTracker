@@ -2,6 +2,7 @@ package com.budget.expansetracker.controllers;
 
 import com.budget.expansetracker.Category;
 import com.budget.expansetracker.DataStorageManager;
+import com.budget.expansetracker.Transaction;
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
 import com.budget.expansetracker.view.OverviewView;
@@ -10,6 +11,9 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class OverviewController implements IController {
@@ -86,5 +90,16 @@ public class OverviewController implements IController {
     @Override
     public Node getView() {
         return view.getNode();
+    }
+
+    public List<Transaction> getRecentTransactions(int recentTransactionCount) {
+        List<Transaction> allTransactions = transactions.getTransactions();
+        Collections.sort(allTransactions, (t1,t2) -> t2.getDate().compareTo(t1.getDate()));
+        List<Transaction> recentTransactions = new ArrayList<>();
+        int numRecentTransactions = 5;
+        for (int i = 0; i < numRecentTransactions && i < allTransactions.size(); i++){
+            recentTransactions.add(allTransactions.get(i));
+        }
+        return recentTransactions;
     }
 }

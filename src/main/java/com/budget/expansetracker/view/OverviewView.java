@@ -1,6 +1,7 @@
 package com.budget.expansetracker.view;
 
 import com.budget.expansetracker.Category;
+import com.budget.expansetracker.Transaction;
 import com.budget.expansetracker.controllers.OverviewController;
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
@@ -37,6 +38,8 @@ public class OverviewView implements IView {
     private TransactionModel transactionModel;
 
     private ListView<Category> categoryListView;
+
+    private final int recentTransactionCount = 5;
 
     public OverviewView(OverviewController controller, CategoryModel categoryModel, TransactionModel transactionModel) {
         this.controller = controller;
@@ -94,17 +97,17 @@ public class OverviewView implements IView {
         categoriesBox.getChildren().add(addCategoryButton);
         categoriesBox.getChildren().add(categoryListView);
 
-
         // Create and configure the recent transactions component
         transactionsBox = new VBox();
         transactionsBox.setSpacing(5);
         Label transactionsLabel = new Label("Recent Transactions:");
-        // Add transaction items to the transactionsBox
-        for (int i = 1; i <= 5; i++) {
-            Label transactionLabel = new Label("Transaction " + i);
-            transactionsBox.getChildren().add(transactionLabel);
-        }
+        ListView<Transaction> transactionsListView = new ListView<>();
 
+        List<Transaction> recentTransactions = controller.getRecentTransactions(recentTransactionCount);
+
+        transactionsListView.setItems(FXCollections.observableArrayList(recentTransactions));
+        transactionsBox.getChildren().add(transactionsLabel);
+        transactionsBox.getChildren().add(transactionsListView);
         // Add the components to the root VBox
         root.setTop(balanceBox);
         root.setLeft(categoriesBox);
