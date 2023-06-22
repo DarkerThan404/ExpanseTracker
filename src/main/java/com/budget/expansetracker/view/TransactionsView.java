@@ -70,7 +70,6 @@ public class TransactionsView implements IView{
         TableColumn<Transaction, String> descriptionColumn = new TableColumn<>("Description");
 
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-        nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
         typeColumn.setCellValueFactory(cellData ->  new SimpleObjectProperty<>(cellData.getValue().getType()));
@@ -83,6 +82,8 @@ public class TransactionsView implements IView{
                 return new SimpleObjectProperty<>(category);
             }
         });
+
+        transactionTableView.setEditable(true);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
         categoryColumn.setPrefWidth(120);
