@@ -126,20 +126,9 @@ public class TransactionsView implements IView{
         confirmDeleteButton = new Button("Confirm Delete");
         cancelButton = new Button("Cancel");
 
-        confirmDeleteButton.setOnAction(event -> {
-            // Handle deletion logic here
-            List<Transaction> selectedTransactions = transactionModel.getTransactions().stream()
-                    .filter(Transaction::isSelected)
-                    .collect(Collectors.toList());
-            transactionModel.removeTranasactions(selectedTransactions);
 
-            // Reset delete mode state
-            deleteMode = false;
-            deleteButton.setVisible(true);
-            confirmDeleteButton.setVisible(false);
-            confirmCancelContainer.getChildren().remove(transactionTableView);
-        });
-        //confirmDeleteButton.setVisible(false);
+        confirmDeleteButton.setVisible(false);
+        cancelButton.setVisible(false);
 
         confirmCancelContainer.getChildren().addAll(confirmDeleteButton, cancelButton);
     }
@@ -153,31 +142,62 @@ public class TransactionsView implements IView{
             return selected;
         });
         selectColumn.setCellFactory(param -> new CheckBoxTableCell<>(index -> {
-            if (deleteMode) {
-                BooleanProperty selected = new SimpleBooleanProperty(
-                        transactionTableView.getItems().get(index).isSelected());
-                selected.addListener((obs, oldValue, newValue) ->
-                        transactionTableView.getItems().get(index).setSelected(newValue));
-                return selected;
-            }
-            return null;
+
+            BooleanProperty selected = new SimpleBooleanProperty(
+                    transactionTableView.getItems().get(index).isSelected());
+            selected.addListener((obs, oldValue, newValue) ->
+                    transactionTableView.getItems().get(index).setSelected(newValue));
+            return selected;
+
         }));
         selectColumn.setEditable(true);
         deleteButton.setOnAction(event -> {
-            deleteMode = !deleteMode;
-            if (deleteMode) {
-                deleteButton.setVisible(false);
-                deleteButton.setManaged(false);
-                confirmDeleteButton.setDisable(false);
-                cancelButton.setDisable(false);
-                if (!transactionTableView.getColumns().contains(selectColumn)) {
-                    transactionTableView.getColumns().add(selectColumn);
-                }
-            } else {
-                deleteButton.setVisible(true);
-                deleteButton.setManaged(true);
-                confirmDeleteButton.setDisable(true);
-                cancelButton.setDisable(true);
+            addTransactionButton.setVisible(false);
+            //addTransactionButton.setManaged(false);
+            deleteButton.setVisible(false);
+            //deleteButton.setManaged(false);
+            confirmDeleteButton.setVisible(true);
+            cancelButton.setVisible(true);
+            if (!transactionTableView.getColumns().contains(selectColumn)) {
+                transactionTableView.getColumns().add(selectColumn);
+            }
+        });
+
+        confirmDeleteButton.setOnAction(event -> {
+            // Handle deletion logic here
+            List<Transaction> selectedTransactions = transactionModel.getTransactions().stream()
+                    .filter(Transaction::isSelected)
+                    .collect(Collectors.toList());
+            transactionModel.removeTranasactions(selectedTransactions);
+
+            // Clear selection
+            for (Transaction transaction : transactionTableView.getItems()) {
+                transaction.setSelected(false);
+            }
+            transactionTableView.getSelectionModel().clearSelection();
+
+            // Reset delete mode state
+            deleteButton.setVisible(true);
+            addTransactionButton.setVisible(true);
+            confirmDeleteButton.setVisible(false);
+            cancelButton.setVisible(false);
+            if(transactionTableView.getColumns().contains(selectColumn)){
+                transactionTableView.getColumns().remove(selectColumn);
+            }
+        });
+
+        cancelButton.setOnAction(event -> {
+            // Clear selection
+            for (Transaction transaction : transactionTableView.getItems()) {
+                transaction.setSelected(false);
+            }
+            transactionTableView.getSelectionModel().clearSelection();
+            // Reset delete mode state
+            deleteButton.setVisible(true);
+            addTransactionButton.setVisible(true);
+            confirmDeleteButton.setVisible(false);
+            cancelButton.setVisible(false);
+            if(transactionTableView.getColumns().contains(selectColumn)){
                 transactionTableView.getColumns().remove(selectColumn);
             }
         });
