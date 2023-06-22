@@ -12,10 +12,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.converter.DoubleStringConverter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -69,31 +71,35 @@ public class TransactionsView implements IView{
         TableColumn<Transaction, Category> categoryColumn = new TableColumn<>("Category");
         TableColumn<Transaction, String> descriptionColumn = new TableColumn<>("Description");
 
-        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
-        amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
-        typeColumn.setCellValueFactory(cellData ->  new SimpleObjectProperty<>(cellData.getValue().getType()));
-        categoryColumn.setCellValueFactory(cellData -> {
-            Transaction transaction = cellData.getValue();
-            Category category = transaction.getCategory();
-            if (category == null) {
-                return new SimpleObjectProperty<>(categoryModel.getDefaultCategory());
-            } else {
-                return new SimpleObjectProperty<>(category);
-            }
-        });
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-
         nameColumn.setOnEditCommit(event -> {
-            // Get the edited value
-            String editedName = event.getNewValue();
-
-            // Get the transaction being edited
-            Transaction editedTransaction = event.getRowValue();
-
-            // Update the transaction with the edited name
-            editedTransaction.setName(editedName);
+            Transaction transaction = event.getRowValue();
+            transaction.setName(event.getNewValue());
+        });
+        //dateColumn.setCellFactory(DatePickerTableCell.forTableColumn());
+        dateColumn.setOnEditCommit(event -> {
+            Transaction transaction = event.getRowValue();
+            transaction.setDate(event.getNewValue());
+        });
+        amountColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        amountColumn.setOnEditCommit(event -> {
+            Transaction transaction = event.getRowValue();
+            transaction.setAmount(event.getNewValue());
+        });
+        typeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(Transaction.TransactionType.values()));
+        typeColumn.setOnEditCommit(event -> {
+            Transaction transaction = event.getRowValue();
+            transaction.setType(event.getNewValue());
+        });
+        categoryColumn.setCellFactory(ComboBoxTableCell.forTableColumn(categoryModel.getCategories()));
+        categoryColumn.setOnEditCommit(event -> {
+            Transaction transaction = event.getRowValue();
+            transaction.setCategory(event.getNewValue());
+        });
+        descriptionColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        descriptionColumn.setOnEditCommit(event -> {
+            Transaction transaction = event.getRowValue();
+            transaction.setDescription(event.getNewValue());
         });
 
         nameColumn.setEditable(true);
