@@ -85,20 +85,6 @@ public class TransactionsView implements IView{
         });
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-        nameColumn.setOnEditCommit(event -> {
-            // Get the edited value
-            String editedName = event.getNewValue();
-
-            // Get the transaction being edited
-            Transaction editedTransaction = event.getRowValue();
-
-            // Update the transaction with the edited name
-            editedTransaction.setName(editedName);
-        });
-
-        nameColumn.setEditable(true);
-        transactionTableView.setEditable(true);
-
         categoryColumn.setPrefWidth(120);
         descriptionColumn.setPrefWidth(200);
 
