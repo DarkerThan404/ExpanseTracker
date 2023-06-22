@@ -38,6 +38,7 @@ public class Transaction {
         this.type = type;
         this.category = category;
         this.description = description;
+        isSelected = false;
     }
 
     // Getters

@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 
 public class TransactionsView implements IView{
 
-    private TransactionsController controller;
-    private CategoryModel categoryModel;
-    private TransactionModel transactionModel;
+    private final TransactionsController controller;
+    private final CategoryModel categoryModel;
+    private final TransactionModel transactionModel;
 
     private VBox root;
     private Button addTransactionButton;
@@ -103,7 +103,12 @@ public class TransactionsView implements IView{
         categoryColumn.setPrefWidth(120);
         descriptionColumn.setPrefWidth(200);
 
-        transactionTableView.getColumns().addAll(nameColumn, dateColumn, amountColumn, typeColumn, categoryColumn, descriptionColumn);
+        transactionTableView.getColumns().add(nameColumn);
+        transactionTableView.getColumns().add(dateColumn);
+        transactionTableView.getColumns().add(amountColumn);
+        transactionTableView.getColumns().add(typeColumn);
+        transactionTableView.getColumns().add(categoryColumn);
+        transactionTableView.getColumns().add(descriptionColumn);
         transactionTableView.setItems(transactionModel.getTransactions());
     }
     private void createButtons(){
@@ -122,13 +127,6 @@ public class TransactionsView implements IView{
         confirmDeleteButton = new Button("Confirm Delete");
         cancelButton = new Button("Cancel");
 
-        deleteButton.setOnAction(event -> {
-            deleteMode = true;
-            deleteButton.setVisible(false);
-            confirmDeleteButton.setVisible(true);
-            confirmCancelContainer.getChildren().add(transactionTableView);
-        });
-
         confirmDeleteButton.setOnAction(event -> {
             // Handle deletion logic here
             List<Transaction> selectedTransactions = transactionModel.getTransactions().stream()
@@ -142,7 +140,7 @@ public class TransactionsView implements IView{
             confirmDeleteButton.setVisible(false);
             confirmCancelContainer.getChildren().remove(transactionTableView);
         });
-        confirmDeleteButton.setVisible(false);
+        //confirmDeleteButton.setVisible(false);
 
         confirmCancelContainer.getChildren().addAll(confirmDeleteButton, cancelButton);
     }
@@ -169,10 +167,18 @@ public class TransactionsView implements IView{
         deleteButton.setOnAction(event -> {
             deleteMode = !deleteMode;
             if (deleteMode) {
+                deleteButton.setVisible(false);
+                deleteButton.setManaged(false);
+                confirmDeleteButton.setDisable(false);
+                cancelButton.setDisable(false);
                 if (!transactionTableView.getColumns().contains(selectColumn)) {
                     transactionTableView.getColumns().add(selectColumn);
                 }
             } else {
+                deleteButton.setVisible(true);
+                deleteButton.setManaged(true);
+                confirmDeleteButton.setDisable(true);
+                cancelButton.setDisable(true);
                 transactionTableView.getColumns().remove(selectColumn);
             }
         });
