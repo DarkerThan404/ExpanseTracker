@@ -106,6 +106,23 @@ public class OverviewView implements IView {
         List<Transaction> recentTransactions = controller.getRecentTransactions(recentTransactionCount);
 
         transactionsListView.setItems(FXCollections.observableArrayList(recentTransactions));
+        transactionsListView.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Transaction transaction, boolean empty) {
+                super.updateItem(transaction, empty);
+
+                if (empty || transaction == null) {
+                    setText(null);
+                } else {
+                    Category transactionCategory = transaction.getCategory();
+                    if(transactionCategory == null){
+                        transactionCategory = categoryModel.getDefaultCategory();
+                    }
+                    System.out.println(transactionCategory.getID());
+                    setText(transaction.getName() + " - " + transaction.getAmount() + ", " + transaction.getDate() + ", " +  categoryModel.getCategoryByID(transactionCategory.getID()) );
+                }
+            }
+        });
         transactionsBox.getChildren().add(transactionsLabel);
         transactionsBox.getChildren().add(transactionsListView);
         // Add the components to the root VBox

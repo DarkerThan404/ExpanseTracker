@@ -55,6 +55,9 @@ public class CategoryModel {
                 return category;
             }
         }
+        if(categoryID == defaultCategory.getID()){
+            return defaultCategory;
+        }
         return null; // Category not found
     }
 
