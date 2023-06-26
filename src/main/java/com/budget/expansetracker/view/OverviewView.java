@@ -80,7 +80,7 @@ public class OverviewView implements IView {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    VBox categoryBox = createCategoryBox(category);
+                    HBox categoryBox = createCategoryBox(category);
                     setGraphic(categoryBox);
                 }
             }
@@ -114,8 +114,8 @@ public class OverviewView implements IView {
         root.setRight(transactionsBox);
     }
 
-    private VBox createCategoryBox(Category category) {
-        VBox categoryBox = new VBox();
+    private HBox createCategoryBox(Category category) {
+        HBox categoryBox = new HBox();
         categoryBox.setSpacing(5);
         categoryBox.setAlignment(Pos.CENTER);
 
@@ -139,7 +139,20 @@ public class OverviewView implements IView {
         StackPane stackPane = new StackPane();
         stackPane.getChildren().addAll(progressBar, progressLabel);
 
-        categoryBox.getChildren().addAll(nameLabel, stackPane);
+        Button editButton = new Button("Edit");
+        editButton.setOnAction(event -> controller.handleEditCategory(category));
+
+        Button deleteButton = new Button("Delete");
+        deleteButton.setOnAction(controller::handleDeleteCategory);
+
+        HBox buttonContainer = new HBox(editButton, deleteButton);
+        buttonContainer.setSpacing(10);
+        buttonContainer.setAlignment(Pos.CENTER_RIGHT);
+
+        VBox headerContainer = new VBox(nameLabel, stackPane);
+        headerContainer.setAlignment(Pos.CENTER);
+
+        categoryBox.getChildren().addAll(headerContainer, buttonContainer);
 
         return categoryBox;
     }
@@ -161,7 +174,6 @@ public class OverviewView implements IView {
                     if(transactionCategory == null){
                         transactionCategory = categoryModel.getDefaultCategory();
                     }
-                    System.out.println(transactionCategory.getID());
                     setText(transaction.getName() + " - " + transaction.getAmount() + ", " + transaction.getDate() + ", " +  categoryModel.getCategoryByID(transactionCategory.getID()) );
                 }
             }

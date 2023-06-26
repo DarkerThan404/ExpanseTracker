@@ -6,10 +6,12 @@ import com.budget.expansetracker.Transaction;
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
 import com.budget.expansetracker.view.OverviewView;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,5 +103,106 @@ public class OverviewController implements IController {
             recentTransactions.add(allTransactions.get(i));
         }
         return recentTransactions;
+    }
+
+    public void handleEditCategory(Category category) {
+        Dialog<Category> dialog = createEditCategoryDialog(category);
+        Optional<Category> editedCategory = dialog.showAndWait();
+        if(editedCategory.isPresent()){
+
+        }
+
+    }
+
+    private Dialog<Category> createEditCategoryDialog(Category category){
+        Dialog<Category> dialog = new Dialog<>();
+        dialog.setTitle("Edit category");
+        dialog.setHeaderText(null);
+        dialog.setResizable(false);
+
+        Label nameLabel = new Label("Name:");
+        Label goalLabel = new Label("Goal: ");
+
+        TextField nameTextField = new TextField(category.getName());
+        TextField goalTextField = new TextField(String.valueOf(category.getGoal()));
+
+        Label nameErrorLabel = new Label();
+        Label goalErrorLabel = new Label();
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.addRow(0, new Label("Name:"), nameTextField);
+        gridPane.addRow(1, new Label("Goal:"), goalTextField);
+        dialog.getDialogPane().setContent(gridPane);
+
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
+
+        Node saveButton = dialog.getDialogPane().lookupButton(saveButtonType);
+
+        ChangeListener<String> validationListener = (observable, oldValue, newValue) -> {
+            String nameText = nameTextField.getText().trim();
+            String goalText = goalTextField.getText().trim();
+            boolean isNameValid = !nameText.isEmpty();
+            boolean isGoalValid = goalText.matches("^\\d*\\.?\\d+$");
+
+            saveButton.setDisable(!isNameValid || !isGoalValid);
+
+            nameErrorLabel.setText(isNameValid ? "" : "Name is required");
+            goalErrorLabel.setText(isGoalValid ? "" : "Goal must be a positive number");
+        };
+
+        nameTextField.textProperty().addListener(validationListener);
+        goalTextField.textProperty().addListener(validationListener);
+
+        VBox dialogContent = new VBox(10);
+        dialogContent.getChildren().addAll(
+                nameLabel, nameTextField, nameErrorLabel,
+                goalLabel, goalTextField, goalErrorLabel
+        );
+
+        dialog.getDialogPane().setContent(dialogContent);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                String name = nameTextField.getText().trim();
+                String goalText = goalTextField.getText().trim();
+
+                // Validate the goal input
+                if (!goalText.matches("^\\d*\\.?\\d+$")) {
+                    // Invalid goal format
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Invalid Goal");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Please enter a valid positive number for the goal.");
+                    alert.showAndWait();
+                    return null;
+                }
+
+                double goal = Double.parseDouble(goalText);
+                if (goal <= 0) {
+                    // Negative or zero goal value
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Invalid Goal");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Please enter a positive number for the goal.");
+                    alert.showAndWait();
+                    return null;
+                }
+                category.setGoal( goal);
+                category.setName(name);
+                return category;
+            }
+            return null;
+        });
+
+        return dialog;
+    }
+
+    public void handleDeleteCategory(ActionEvent event) {
+
     }
 }
