@@ -170,28 +170,7 @@ public class OverviewController implements IController {
             if (dialogButton == saveButtonType) {
                 String name = nameTextField.getText().trim();
                 String goalText = goalTextField.getText().trim();
-
-                // Validate the goal input
-                if (!goalText.matches("^\\d*\\.?\\d+$")) {
-                    // Invalid goal format
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Invalid Goal");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Please enter a valid positive number for the goal.");
-                    alert.showAndWait();
-                    return null;
-                }
-
                 double goal = Double.parseDouble(goalText);
-                if (goal <= 0) {
-                    // Negative or zero goal value
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Invalid Goal");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Please enter a positive number for the goal.");
-                    alert.showAndWait();
-                    return null;
-                }
                 category.setGoal( goal);
                 category.setName(name);
                 return category;
