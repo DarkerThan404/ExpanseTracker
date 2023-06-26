@@ -120,9 +120,6 @@ public class OverviewController implements IController {
         dialog.setHeaderText(null);
         dialog.setResizable(false);
 
-        Label nameLabel = new Label("Name:");
-        Label goalLabel = new Label("Goal: ");
-
         TextField nameTextField = new TextField(category.getName());
         TextField goalTextField = new TextField(String.valueOf(category.getGoal()));
 
@@ -133,7 +130,13 @@ public class OverviewController implements IController {
         gridPane.setHgap(10);
         gridPane.setVgap(10);
         gridPane.addRow(0, new Label("Name:"), nameTextField);
-        gridPane.addRow(1, new Label("Goal:"), goalTextField);
+        GridPane.setColumnSpan(nameErrorLabel,2);
+        gridPane.addRow(1,nameErrorLabel);
+
+        gridPane.addRow(2, new Label("Goal:"), goalTextField);
+        GridPane.setColumnSpan(goalErrorLabel, 2);
+        gridPane.addRow(3,goalErrorLabel);
+
         dialog.getDialogPane().setContent(gridPane);
 
         ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
@@ -157,14 +160,6 @@ public class OverviewController implements IController {
 
         nameTextField.textProperty().addListener(validationListener);
         goalTextField.textProperty().addListener(validationListener);
-
-        VBox dialogContent = new VBox(10);
-        dialogContent.getChildren().addAll(
-                nameLabel, nameTextField, nameErrorLabel,
-                goalLabel, goalTextField, goalErrorLabel
-        );
-
-        dialog.getDialogPane().setContent(dialogContent);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
