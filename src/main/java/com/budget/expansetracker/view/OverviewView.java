@@ -100,29 +100,12 @@ public class OverviewView implements IView {
         // Create and configure the recent transactions component
         transactionsBox = new VBox();
         transactionsBox.setSpacing(5);
+
         Label transactionsLabel = new Label("Recent Transactions:");
-        ListView<Transaction> transactionsListView = new ListView<>();
-
         List<Transaction> recentTransactions = controller.getRecentTransactions(recentTransactionCount);
+        ListView<Transaction> transactionsListView = createTransactionView(recentTransactions);
 
-        transactionsListView.setItems(FXCollections.observableArrayList(recentTransactions));
-        transactionsListView.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Transaction transaction, boolean empty) {
-                super.updateItem(transaction, empty);
 
-                if (empty || transaction == null) {
-                    setText(null);
-                } else {
-                    Category transactionCategory = transaction.getCategory();
-                    if(transactionCategory == null){
-                        transactionCategory = categoryModel.getDefaultCategory();
-                    }
-                    System.out.println(transactionCategory.getID());
-                    setText(transaction.getName() + " - " + transaction.getAmount() + ", " + transaction.getDate() + ", " +  categoryModel.getCategoryByID(transactionCategory.getID()) );
-                }
-            }
-        });
         transactionsBox.getChildren().add(transactionsLabel);
         transactionsBox.getChildren().add(transactionsListView);
         // Add the components to the root VBox
@@ -159,5 +142,30 @@ public class OverviewView implements IView {
         categoryBox.getChildren().addAll(nameLabel, stackPane);
 
         return categoryBox;
+    }
+
+    private ListView<Transaction> createTransactionView(List<Transaction> recentTransactions){
+
+        ListView<Transaction> transactionsListView = new ListView<>();
+
+        transactionsListView.setItems(FXCollections.observableArrayList(recentTransactions));
+        transactionsListView.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Transaction transaction, boolean empty) {
+                super.updateItem(transaction, empty);
+
+                if (empty || transaction == null) {
+                    setText(null);
+                } else {
+                    Category transactionCategory = transaction.getCategory();
+                    if(transactionCategory == null){
+                        transactionCategory = categoryModel.getDefaultCategory();
+                    }
+                    System.out.println(transactionCategory.getID());
+                    setText(transaction.getName() + " - " + transaction.getAmount() + ", " + transaction.getDate() + ", " +  categoryModel.getCategoryByID(transactionCategory.getID()) );
+                }
+            }
+        });
+        return transactionsListView;
     }
 }
