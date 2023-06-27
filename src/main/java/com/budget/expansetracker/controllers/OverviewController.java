@@ -184,10 +184,9 @@ public class OverviewController implements IController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // Delete the category from your data structure or database
-            // ...
+            //TODO: Delete the category from your data structure or database
 
-            // Remove the category box from the UI
+            // Removes the category box from the UI and data structure
             categories.remove(category);
         }
     }
