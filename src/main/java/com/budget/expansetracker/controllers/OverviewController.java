@@ -176,7 +176,19 @@ public class OverviewController implements IController {
         return dialog;
     }
 
-    public void handleDeleteCategory(ActionEvent event) {
+    public void handleDeleteCategory(Category category) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Category");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to delete this category?");
 
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Delete the category from your data structure or database
+            // ...
+
+            // Remove the category box from the UI
+            categories.remove(category);
+        }
     }
 }

@@ -143,7 +143,7 @@ public class OverviewView implements IView {
         editButton.setOnAction(event -> controller.handleEditCategory(category));
 
         Button deleteButton = new Button("Delete");
-        deleteButton.setOnAction(controller::handleDeleteCategory);
+        deleteButton.setOnAction(event -> controller.handleDeleteCategory(category));
 
         HBox buttonContainer = new HBox(editButton, deleteButton);
         buttonContainer.setSpacing(10);
