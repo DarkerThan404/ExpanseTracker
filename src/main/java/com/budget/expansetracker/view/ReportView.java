@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
 
 import java.time.Month;
@@ -131,10 +132,21 @@ public class ReportView implements IView {
     }
 
     private void createExpenseComparisonChart() {
-        // Define the months to compare
-        Month month1 = Month.JUNE;
-        Month month2 = Month.MAY;
+        ComboBox<Month> month1ComboBox = new ComboBox<>();
+        ComboBox<Month> month2ComboBox = new ComboBox<>();
 
+        month1ComboBox.getItems().addAll(Month.values());
+        month2ComboBox.getItems().addAll(Month.values());
+
+        month1ComboBox.setValue(Month.JUNE);
+        month2ComboBox.setValue(Month.MAY);
+
+        Month month1 = month1ComboBox.getValue();
+        Month month2 = month2ComboBox.getValue();
+
+        // Create a VBox to hold the ComboBoxes and the BarChart
+        VBox chartContainer = new VBox(10); // Set spacing between elements
+        chartContainer.getChildren().addAll(month1ComboBox, month2ComboBox);
         // Retrieve transactions
         List<Transaction> transactions = transactionModel.getTransactions();
 
@@ -160,6 +172,8 @@ public class ReportView implements IView {
         xAxis.setLabel("Time Period");
         yAxis.setLabel("Total Expense");
 
+        // Add the bar chart to the VBox
+        chartContainer.getChildren().add(barChart);
         // Create series for data
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Expenses");
@@ -173,9 +187,42 @@ public class ReportView implements IView {
 
         // Customize other chart properties as desired
 
+        // Set the ComboBoxes at the top of the BorderPane
+        //chartContainer.setTop(new HBox(10, month1ComboBox, month2ComboBox));
+
+        // Set the bar chart in the center of the BorderPane
+        //chartContainer.setCenter(barChart);
+
         // Add the bar chart to the root container
-        root.getChildren().add(barChart);
+        root.getChildren().add(chartContainer);
+
+        // Update the chart when the ComboBox selections change
+        month1ComboBox.setOnAction(event -> updateExpenseComparisonChart(series, month1ComboBox.getValue(), month2ComboBox.getValue()));
+        month2ComboBox.setOnAction(event -> updateExpenseComparisonChart(series, month1ComboBox.getValue(), month2ComboBox.getValue()));
     }
+
+    private void updateExpenseComparisonChart(XYChart.Series<String, Number> series, Month month1, Month month2) {
+        // Retrieve transactions
+        List<Transaction> transactions = transactionModel.getTransactions();
+
+        // Filter transactions based on months
+        List<Transaction> month1Transactions = transactions.stream()
+                .filter(transaction -> transaction.getDate().getMonth() == month1)
+                .collect(Collectors.toList());
+        List<Transaction> month2Transactions = transactions.stream()
+                .filter(transaction -> transaction.getDate().getMonth() == month2)
+                .collect(Collectors.toList());
+
+        // Calculate total expenses for each month
+        double month1TotalExpense = calculateTotalExpense(month1Transactions);
+        double month2TotalExpense = calculateTotalExpense(month2Transactions);
+
+        // Update the data in the series
+        series.getData().clear();
+        series.getData().add(new XYChart.Data<>(month1.toString(), month1TotalExpense));
+        series.getData().add(new XYChart.Data<>(month2.toString(), month2TotalExpense));
+    }
+
 
     private double calculateTotalExpense(List<Transaction> transactions) {
         return transactions.stream()
