@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.layout.VBox;
 
+import java.time.Month;
 import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,6 @@ public class ReportView implements IView {
 
     private VBox root;
 
-
     public ReportView(ReportController reportController, CategoryModel categoryModel, TransactionModel transactionModel){
         this.reportController = reportController;
         this.categoryModel = categoryModel;
@@ -41,6 +41,7 @@ public class ReportView implements IView {
     private void createView(){
         root = new VBox();
         createMonthlyTrendsChart();
+        createExpenseComparisonChart();
         // Create the pie chart and configure it
         PieChart pieChart = createPieChart();
         root.getChildren().add(pieChart);
@@ -129,5 +130,58 @@ public class ReportView implements IView {
         root.getChildren().add(lineChart);
     }
 
+    private void createExpenseComparisonChart() {
+        // Define the months to compare
+        Month month1 = Month.JUNE;
+        Month month2 = Month.MAY;
+
+        // Retrieve transactions
+        List<Transaction> transactions = transactionModel.getTransactions();
+
+        // Filter transactions based on months
+        List<Transaction> month1Transactions = transactions.stream()
+                .filter(transaction -> transaction.getDate().getMonth() == month1)
+                .collect(Collectors.toList());
+        List<Transaction> month2Transactions = transactions.stream()
+                .filter(transaction -> transaction.getDate().getMonth() == month2)
+                .collect(Collectors.toList());
+
+        // Calculate total expenses for each month
+        double month1TotalExpense = calculateTotalExpense(month1Transactions);
+        double month2TotalExpense = calculateTotalExpense(month2Transactions);
+
+        // Create a bar chart
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+
+        // Set chart properties
+        barChart.setTitle("Expense Comparison");
+        xAxis.setLabel("Time Period");
+        yAxis.setLabel("Total Expense");
+
+        // Create series for data
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Expenses");
+
+        // Add data to the series
+        series.getData().add(new XYChart.Data<>(month1.toString(), month1TotalExpense));
+        series.getData().add(new XYChart.Data<>(month2.toString(), month2TotalExpense));
+
+        // Add the series to the bar chart
+        barChart.getData().add(series);
+
+        // Customize other chart properties as desired
+
+        // Add the bar chart to the root container
+        root.getChildren().add(barChart);
+    }
+
+    private double calculateTotalExpense(List<Transaction> transactions) {
+        return transactions.stream()
+                .filter(transaction -> transaction.getType() == Transaction.TransactionType.EXPENSE)
+                .mapToDouble(Transaction::getAmount)
+                .sum();
+    }
 
 }
