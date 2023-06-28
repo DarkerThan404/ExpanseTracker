@@ -23,6 +23,6 @@ public class ReportController implements IController {
     }
     @Override
     public Node getView() {
-        return null;
+        return view.getNode();
     }
 }
