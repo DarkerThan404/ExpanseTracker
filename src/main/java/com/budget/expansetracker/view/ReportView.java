@@ -10,6 +10,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.ComboBox;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.time.Month;
@@ -144,8 +146,8 @@ public class ReportView implements IView {
         Month month1 = month1ComboBox.getValue();
         Month month2 = month2ComboBox.getValue();
 
-        // Create a VBox to hold the ComboBoxes and the BarChart
-        VBox chartContainer = new VBox(10); // Set spacing between elements
+        // Create a BorderPane to hold the ComboBoxes and the BarChart
+        BorderPane chartContainer = new BorderPane();
         chartContainer.getChildren().addAll(month1ComboBox, month2ComboBox);
         // Retrieve transactions
         List<Transaction> transactions = transactionModel.getTransactions();
@@ -172,8 +174,11 @@ public class ReportView implements IView {
         xAxis.setLabel("Time Period");
         yAxis.setLabel("Total Expense");
 
-        // Add the bar chart to the VBox
-        chartContainer.getChildren().add(barChart);
+        // Set the ComboBoxes at the top of the BorderPane
+        chartContainer.setTop(new HBox(10, month1ComboBox, month2ComboBox));
+        // Set the bar chart in the center of the BorderPane
+        chartContainer.setCenter(barChart);
+
         // Create series for data
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Expenses");
@@ -186,12 +191,6 @@ public class ReportView implements IView {
         barChart.getData().add(series);
 
         // Customize other chart properties as desired
-
-        // Set the ComboBoxes at the top of the BorderPane
-        //chartContainer.setTop(new HBox(10, month1ComboBox, month2ComboBox));
-
-        // Set the bar chart in the center of the BorderPane
-        //chartContainer.setCenter(barChart);
 
         // Add the bar chart to the root container
         root.getChildren().add(chartContainer);
