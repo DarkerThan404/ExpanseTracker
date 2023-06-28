@@ -38,6 +38,12 @@ public class ReportView implements IView {
     private void createView(){
         root = new VBox();
 
+        // Create the pie chart and configure it
+        PieChart pieChart = createPieChart();
+        root.getChildren().add(pieChart);
+    }
+
+    private PieChart createPieChart(){
         // Retrieve the amounts for each category
         Map<Category, Double> categoryAmounts = getCategoryAmounts();
 
@@ -53,8 +59,7 @@ public class ReportView implements IView {
         }
 
         // Create the pie chart and configure it
-        PieChart pieChart = new PieChart(pieChartData);
-        root.getChildren().add(pieChart);
+        return new PieChart(pieChartData);
     }
 
     // Retrieve the amounts for each category from the transaction model
@@ -72,4 +77,6 @@ public class ReportView implements IView {
 
         return categoryAmounts;
     }
+
+
 }
