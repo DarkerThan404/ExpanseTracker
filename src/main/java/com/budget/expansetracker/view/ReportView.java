@@ -13,13 +13,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 import java.time.Month;
 import java.time.YearMonth;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReportView implements IView {
@@ -28,7 +26,7 @@ public class ReportView implements IView {
     private CategoryModel categoryModel;
     private TransactionModel transactionModel;
 
-    private VBox root;
+    private HBox root;
 
     public ReportView(ReportController reportController, CategoryModel categoryModel, TransactionModel transactionModel){
         this.reportController = reportController;
@@ -42,11 +40,17 @@ public class ReportView implements IView {
     }
 
     private void createView(){
-        root = new VBox();
-        createMonthlyTrendsChart();
-        createExpenseComparisonChart();
+        root = new HBox();
+        LineChart lineChart = createMonthlyTrendsChart();
+        BorderPane borderPane = createExpenseComparisonChart();
+
+        VBox graphContainer = new VBox();
+        graphContainer.getChildren().add(lineChart);
+        graphContainer.getChildren().add(borderPane);
+
         // Create the pie chart and configure it
         PieChart pieChart = createPieChart();
+        root.getChildren().add(graphContainer);
         root.getChildren().add(pieChart);
     }
 
@@ -85,7 +89,7 @@ public class ReportView implements IView {
         return categoryAmounts;
     }
 
-    private void createMonthlyTrendsChart() {
+    private LineChart createMonthlyTrendsChart() {
         // Retrieve transactions
         List<Transaction> transactions = transactionModel.getTransactions();
 
@@ -130,25 +134,29 @@ public class ReportView implements IView {
         // Customize other chart properties as desired
 
         // Add the line chart to the root container
-        root.getChildren().add(lineChart);
+        return lineChart;
     }
 
-    private void createExpenseComparisonChart() {
+    private BorderPane createExpenseComparisonChart() {
         ComboBox<Month> month1ComboBox = new ComboBox<>();
         ComboBox<Month> month2ComboBox = new ComboBox<>();
+        ComboBox<String> categoryComboBox = new ComboBox<>();
 
         month1ComboBox.getItems().addAll(Month.values());
         month2ComboBox.getItems().addAll(Month.values());
+        //categoryComboBox.getItems().add("All Categories");
+        categoryModel.getCategories().forEach(category -> categoryComboBox.getItems().add(category.getName()));
 
         month1ComboBox.setValue(Month.JUNE);
         month2ComboBox.setValue(Month.MAY);
+        //categoryComboBox.setValue("All Categories");
 
         Month month1 = month1ComboBox.getValue();
         Month month2 = month2ComboBox.getValue();
 
         // Create a BorderPane to hold the ComboBoxes and the BarChart
         BorderPane chartContainer = new BorderPane();
-        chartContainer.getChildren().addAll(month1ComboBox, month2ComboBox);
+        //chartContainer.getChildren().addAll(categoryComboBox, month1ComboBox, month2ComboBox);
         // Retrieve transactions
         List<Transaction> transactions = transactionModel.getTransactions();
 
@@ -175,7 +183,7 @@ public class ReportView implements IView {
         yAxis.setLabel("Total Expense");
 
         // Set the ComboBoxes at the top of the BorderPane
-        chartContainer.setTop(new HBox(10, month1ComboBox, month2ComboBox));
+        chartContainer.setTop(new HBox(10, categoryComboBox, month1ComboBox, month2ComboBox));
         // Set the bar chart in the center of the BorderPane
         chartContainer.setCenter(barChart);
 
@@ -192,34 +200,72 @@ public class ReportView implements IView {
 
         // Customize other chart properties as desired
 
-        // Add the bar chart to the root container
-        root.getChildren().add(chartContainer);
-
         // Update the chart when the ComboBox selections change
-        month1ComboBox.setOnAction(event -> updateExpenseComparisonChart(series, month1ComboBox.getValue(), month2ComboBox.getValue()));
-        month2ComboBox.setOnAction(event -> updateExpenseComparisonChart(series, month1ComboBox.getValue(), month2ComboBox.getValue()));
+        month1ComboBox.setOnAction(event -> updateExpenseComparisonChart(series, month1ComboBox.getValue(), month2ComboBox.getValue(), categoryComboBox.getValue()));
+        month2ComboBox.setOnAction(event -> updateExpenseComparisonChart(series, month1ComboBox.getValue(), month2ComboBox.getValue(), categoryComboBox.getValue()));
+        categoryComboBox.setOnAction(event -> updateExpenseComparisonChart(series, month1ComboBox.getValue(), month2ComboBox.getValue(), categoryComboBox.getValue()));
+
+        return chartContainer;
     }
 
-    private void updateExpenseComparisonChart(XYChart.Series<String, Number> series, Month month1, Month month2) {
+    private void updateExpenseComparisonChart(XYChart.Series<String, Number> series, Month month1, Month month2, String selectedCategory) {
         // Retrieve transactions
         List<Transaction> transactions = transactionModel.getTransactions();
 
-        // Filter transactions based on months
+        // Filter transactions based on months and selected category
         List<Transaction> month1Transactions = transactions.stream()
                 .filter(transaction -> transaction.getDate().getMonth() == month1)
-                .collect(Collectors.toList());
-        List<Transaction> month2Transactions = transactions.stream()
-                .filter(transaction -> transaction.getDate().getMonth() == month2)
+                .filter(transaction -> selectedCategory.equals(transaction.getCategory().getName()))
                 .collect(Collectors.toList());
 
+        List<Transaction> month2Transactions = transactions.stream()
+                .filter(transaction -> transaction.getDate().getMonth() == month2)
+                .filter(transaction -> selectedCategory.equals(transaction.getCategory().getName()))
+                .collect(Collectors.toList());
         // Calculate total expenses for each month
         double month1TotalExpense = calculateTotalExpense(month1Transactions);
         double month2TotalExpense = calculateTotalExpense(month2Transactions);
 
+        System.out.println(month2TotalExpense);
+
         // Update the data in the series
         series.getData().clear();
-        series.getData().add(new XYChart.Data<>(month1.toString(), month1TotalExpense));
-        series.getData().add(new XYChart.Data<>(month2.toString(), month2TotalExpense));
+        series.getData().add(new XYChart.Data<>("Month 1", month1TotalExpense));
+        series.getData().add(new XYChart.Data<>("Month 2", month2TotalExpense));
+    }
+
+
+
+
+    private List<String> getUniqueCategories(List<Transaction>... transactionLists) {
+        return Arrays.stream(transactionLists)
+                .flatMap(transactions -> transactions.stream()
+                        .map(Transaction::getCategory)
+                        .map(Category::getName))
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, Double> calculateCategoryExpenses(List<Transaction> transactions) {
+        Map<String, Double> categoryExpenses = new HashMap<>();
+
+        for (Transaction transaction : transactions) {
+            String category = transaction.getCategory().getName();
+            double expense = categoryExpenses.getOrDefault(category, 0.0);
+            expense += transaction.getAmount();
+            categoryExpenses.put(category, expense);
+        }
+
+        return categoryExpenses;
+    }
+
+    private void calculateCategoryExpenses(List<Transaction> transactions, Map<String, Double> categoryExpenses) {
+        for (Transaction transaction : transactions) {
+            String category = transaction.getCategory().getName();
+            double amount = transaction.getAmount();
+
+            categoryExpenses.put(category, categoryExpenses.getOrDefault(category, 0.0) + amount);
+        }
     }
 
 
@@ -228,6 +274,26 @@ public class ReportView implements IView {
                 .filter(transaction -> transaction.getType() == Transaction.TransactionType.EXPENSE)
                 .mapToDouble(Transaction::getAmount)
                 .sum();
+    }
+
+    public String generateRandomColor() {
+        double red = Math.random();
+        double green = Math.random();
+        double blue = Math.random();
+
+        Color color = new Color(red, green, blue, 1.0);
+
+        // Convert the color to a hexadecimal string representation
+        String hexColor = colorToHex(color);
+
+        return hexColor;
+    }
+
+    private String colorToHex(Color color) {
+        return String.format("#%02X%02X%02X",
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
     }
 
 }
