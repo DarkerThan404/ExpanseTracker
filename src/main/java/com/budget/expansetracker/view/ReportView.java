@@ -137,19 +137,19 @@ public class ReportView implements IView {
         return lineChart;
     }
 
-    private BorderPane createExpenseComparisonChart() {
+    /*private BorderPane createExpenseComparisonChart() {
         ComboBox<Month> month1ComboBox = new ComboBox<>();
         ComboBox<Month> month2ComboBox = new ComboBox<>();
         ComboBox<String> categoryComboBox = new ComboBox<>();
 
         month1ComboBox.getItems().addAll(Month.values());
         month2ComboBox.getItems().addAll(Month.values());
-        //categoryComboBox.getItems().add("All Categories");
+        categoryComboBox.getItems().add("All");
         categoryModel.getCategories().forEach(category -> categoryComboBox.getItems().add(category.getName()));
 
         month1ComboBox.setValue(Month.JUNE);
         month2ComboBox.setValue(Month.MAY);
-        //categoryComboBox.setValue("All Categories");
+        categoryComboBox.setValue("All");
 
         Month month1 = month1ComboBox.getValue();
         Month month2 = month2ComboBox.getValue();
@@ -206,7 +206,116 @@ public class ReportView implements IView {
         categoryComboBox.setOnAction(event -> updateExpenseComparisonChart(series, month1ComboBox.getValue(), month2ComboBox.getValue(), categoryComboBox.getValue()));
 
         return chartContainer;
+    }*/
+
+    private BorderPane createExpenseComparisonChart() {
+        ComboBox<Month> month1ComboBox = new ComboBox<>();
+        ComboBox<Month> month2ComboBox = new ComboBox<>();
+        ComboBox<String> categoryComboBox = new ComboBox<>();
+
+        month1ComboBox.getItems().addAll(Month.values());
+        month2ComboBox.getItems().addAll(Month.values());
+        categoryComboBox.getItems().add("All");
+        categoryModel.getCategories().forEach(category -> categoryComboBox.getItems().add(category.getName()));
+
+        month1ComboBox.setValue(Month.JUNE);
+        month2ComboBox.setValue(Month.MAY);
+        categoryComboBox.setValue("All");
+
+        // Create a BorderPane to hold the ComboBoxes and the BarChart
+        BorderPane chartContainer = new BorderPane();
+        chartContainer.setTop(new HBox(10, categoryComboBox, month1ComboBox, month2ComboBox));
+
+        // Retrieve transactions
+        List<Transaction> transactions = transactionModel.getTransactions();
+
+        // Update the chart when the ComboBox selections change
+        month1ComboBox.setOnAction(event -> updateExpenseComparisonChart(chartContainer, transactions));
+        month2ComboBox.setOnAction(event -> updateExpenseComparisonChart(chartContainer, transactions));
+        categoryComboBox.setOnAction(event -> updateExpenseComparisonChart(chartContainer, transactions));
+
+        // Initialize the chart with default values
+        updateExpenseComparisonChart(chartContainer, transactions);
+
+        return chartContainer;
     }
+
+    private void updateExpenseComparisonChart(BorderPane chartContainer, List<Transaction> transactions) {
+        ComboBox<Month> month1ComboBox = (ComboBox<Month>) ((HBox) chartContainer.getTop()).getChildren().get(1);
+        ComboBox<Month> month2ComboBox = (ComboBox<Month>) ((HBox) chartContainer.getTop()).getChildren().get(2);
+        ComboBox<String> categoryComboBox = (ComboBox<String>) ((HBox) chartContainer.getTop()).getChildren().get(0);
+
+        Month month1 = month1ComboBox.getValue();
+        Month month2 = month2ComboBox.getValue();
+        String selectedCategory = categoryComboBox.getValue();
+
+        // Filter transactions based on months and selected category
+        List<Transaction> month1Transactions = transactions.stream()
+                .filter(transaction -> transaction.getDate().getMonth() == month1)
+                .filter(transaction -> selectedCategory.equals("All") || transaction.getCategory().equals(selectedCategory))
+                .collect(Collectors.toList());
+        List<Transaction> month2Transactions = transactions.stream()
+                .filter(transaction -> transaction.getDate().getMonth() == month2)
+                .filter(transaction -> selectedCategory.equals("All") || transaction.getCategory().equals(selectedCategory))
+                .collect(Collectors.toList());
+
+        // Calculate the total expenses for the selected months and category
+        double month1TotalExpense = calculateTotalExpense(month1Transactions);
+        double month2TotalExpense = calculateTotalExpense(month2Transactions);
+
+        // Create a stacked bar chart
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        StackedBarChart<String, Number> stackedBarChart = new StackedBarChart<>(xAxis, yAxis);
+
+        // Set chart properties
+        stackedBarChart.setTitle("Expense Comparison");
+        xAxis.setLabel("Categories");
+        yAxis.setLabel("Total Expense");
+
+        // Create a series for each month
+        XYChart.Series<String, Number> month1Series = new XYChart.Series<>();
+        month1Series.setName(month1.toString());
+        XYChart.Series<String, Number> month2Series = new XYChart.Series<>();
+        month2Series.setName(month2.toString());
+
+        // Get the list of categories
+        List<String> categories = categoryModel.getCategories().stream()
+                .map(Category::getName)
+                .collect(Collectors.toList());
+
+        // Add category names to the category axis
+        xAxis.setCategories(FXCollections.observableArrayList(categories));
+
+        // Add data to the series
+        for (String category : categories) {
+            double month1Expense = calculateCategoryExpense(month1Transactions, category);
+            double month2Expense = calculateCategoryExpense(month2Transactions, category);
+
+            month1Series.getData().add(new XYChart.Data<>(category, month1Expense));
+            month2Series.getData().add(new XYChart.Data<>(category, month2Expense));
+        }
+
+        // Clear previous data from the chart
+        stackedBarChart.getData().clear();
+
+        // Add the series to the stacked bar chart
+        stackedBarChart.getData().addAll(month1Series, month2Series);
+
+        // Set the stacked bar chart in the center of the BorderPane
+        chartContainer.setCenter(stackedBarChart);
+    }
+
+    private double calculateCategoryExpense(List<Transaction> transactions, String category) {
+        double totalExpense = 0.0;
+        for (Transaction transaction : transactions) {
+            if (transaction.getCategory().getName().equals(category) && transaction.getType().equals(Transaction.TransactionType.EXPENSE)) {
+                totalExpense += transaction.getAmount();
+            }
+        }
+        return totalExpense;
+    }
+
 
     private void updateExpenseComparisonChart(XYChart.Series<String, Number> series, Month month1, Month month2, String selectedCategory) {
         // Retrieve transactions
@@ -215,23 +324,88 @@ public class ReportView implements IView {
         // Filter transactions based on months and selected category
         List<Transaction> month1Transactions = transactions.stream()
                 .filter(transaction -> transaction.getDate().getMonth() == month1)
-                .filter(transaction -> selectedCategory.equals(transaction.getCategory().getName()))
+                .filter(transaction -> selectedCategory.equals(transaction.getCategory().getName()) || selectedCategory.equals("All"))
                 .collect(Collectors.toList());
 
         List<Transaction> month2Transactions = transactions.stream()
                 .filter(transaction -> transaction.getDate().getMonth() == month2)
-                .filter(transaction -> selectedCategory.equals(transaction.getCategory().getName()))
+                .filter(transaction -> selectedCategory.equals(transaction.getCategory().getName()) || selectedCategory.equals("All"))
                 .collect(Collectors.toList());
+
+        // Calculate the total expenses for each category in each month
+        Map<String, Double> month1CategoryExpenses = calculateCategoryExpenses(month1Transactions);
+        Map<String, Double> month2CategoryExpenses = calculateCategoryExpenses(month2Transactions);
         // Calculate total expenses for each month
         double month1TotalExpense = calculateTotalExpense(month1Transactions);
         double month2TotalExpense = calculateTotalExpense(month2Transactions);
+
+        // Create a list of unique categories
+        List<String> uniqueCategories = new ArrayList<>(month1CategoryExpenses.keySet());
+        uniqueCategories.addAll(month2CategoryExpenses.keySet());
+        uniqueCategories = uniqueCategories.stream().distinct().collect(Collectors.toList());
+
+        // Assign colors to the categories
+        Map<String, Color> categoryColors = assignRandomCategoryColors(uniqueCategories);
 
         System.out.println(month2TotalExpense);
 
         // Update the data in the series
         series.getData().clear();
-        series.getData().add(new XYChart.Data<>("Month 1", month1TotalExpense));
-        series.getData().add(new XYChart.Data<>("Month 2", month2TotalExpense));
+        // Add data for each category in month 1
+        for (String category : uniqueCategories) {
+            double month1Expense = month1CategoryExpenses.getOrDefault(category, 0.0);
+            series.getData().add(new XYChart.Data<>(month1.toString(), month1Expense));
+            // Customize the color of the category bar
+            if (!series.getData().isEmpty()) {
+                Node categoryNode = series.getData().get(series.getData().size() - 1).getNode();
+                if (categoryNode != null) {
+                    categoryNode.setStyle("-fx-bar-fill: " + toHex(categoryColors.get(category)) + ";");
+                }
+            }
+        }
+
+        // Add data for each category in month 2
+        for (String category : uniqueCategories) {
+            double month2Expense = month2CategoryExpenses.getOrDefault(category, 0.0);
+            series.getData().add(new XYChart.Data<>(month2.toString(), month2Expense));
+
+            // Customize the color of the category bar
+            if (!series.getData().isEmpty()) {
+                Node categoryNode = series.getData().get(series.getData().size() - 1).getNode();
+                if (categoryNode != null) {
+                    categoryNode.setStyle("-fx-bar-fill: " + toHex(categoryColors.get(category)) + ";");
+                }
+            }
+        }
+
+        // Add a bar for the total expenses of all categories combined
+        series.getData().add(new XYChart.Data<>("Total", month1TotalExpense));
+        series.getData().add(new XYChart.Data<>("Total", month2TotalExpense));
+
+        // Customize the color of the total expenses bar
+        Node totalExpenseNode = series.getData().get(series.getData().size() - 1).getNode();
+        if (totalExpenseNode != null) {
+            totalExpenseNode.setStyle("-fx-bar-fill: #000000;");
+        }
+    }
+
+    // Helper method to convert a JavaFX Color to hexadecimal string
+    private String toHex(Color color) {
+        return String.format("#%02X%02X%02X",
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
+    }
+
+    // Helper method to assign random colors to each category
+    private Map<String, Color> assignRandomCategoryColors(List<String> categories) {
+        Map<String, Color> categoryColors = new HashMap<>();
+        Random random = new Random();
+        for (String category : categories) {
+            Color color = Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+            categoryColors.put(category, color);
+        }
+        return categoryColors;
     }
 
 
