@@ -56,7 +56,7 @@ public class ReportView implements IView {
 
     private BorderPane createPieChartView() {
 
-        Label timeLabel = new Label("Časové období:");
+        Label timeLabel = new Label("Time period");
         // Create ComboBox for selecting month
         ComboBox<String> monthComboBox = new ComboBox<>();
         List<String> options = new ArrayList<>();
