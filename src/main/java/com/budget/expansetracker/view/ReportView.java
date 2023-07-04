@@ -222,9 +222,12 @@ public class ReportView implements IView {
             double month2expense = calculateCategoryExpense(month2Transactions, category);
 
             categorySeries.getData().add(new XYChart.Data<>(month1.toString(), month1expense));
-            categorySeries.getData().add(new XYChart.Data<>(month2.toString(), month2expense));
+            // Add data for month2 only if it's different from month1
+            if (!month2.equals(month1)) {
+                categorySeries.getData().add(new XYChart.Data<>(month2.toString(), month2expense));
+            }
 
-            // Add the category series to the chart
+                // Add the category series to the chart
             stackedBarChart.getData().add(categorySeries);
         }
 
