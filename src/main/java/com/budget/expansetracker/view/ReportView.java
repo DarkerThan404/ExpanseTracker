@@ -238,7 +238,6 @@ public class ReportView implements IView {
         for (Transaction transaction : transactions) {
             if (transaction.getCategory().getName().equals(category) && transaction.getType().equals(Transaction.TransactionType.EXPENSE)) {
                 totalExpense += transaction.getAmount();
-
             }
         }
 
