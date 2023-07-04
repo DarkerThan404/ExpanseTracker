@@ -190,8 +190,6 @@ public class ReportView implements IView {
                 .filter(transaction -> selectedCategory.equals("All") || transaction.getCategory().getName().equals(selectedCategory))
                 .collect(Collectors.toList());
 
-        System.out.println(month1Transactions.isEmpty());
-
         // Create a stacked bar chart
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
@@ -236,14 +234,14 @@ public class ReportView implements IView {
 
     private double calculateCategoryExpense(List<Transaction> transactions, String category) {
         double totalExpense = 0.0;
-        System.out.println(transactions.isEmpty());
+
         for (Transaction transaction : transactions) {
             if (transaction.getCategory().getName().equals(category) && transaction.getType().equals(Transaction.TransactionType.EXPENSE)) {
                 totalExpense += transaction.getAmount();
-                System.out.println("Triggerd if in loop calculate category expense");
+
             }
         }
-        System.out.println(totalExpense);
+
         return totalExpense;
     }
 
