@@ -64,6 +64,7 @@ public class ReportView implements IView {
         for (Month month : Month.values()) {
             options.add(month.toString());
         }
+        monthComboBox.setValue("All");
         monthComboBox.setItems(FXCollections.observableArrayList(options));
         HBox timeContainer = new HBox();
         timeContainer.getChildren().addAll(timeLabel, monthComboBox);
@@ -145,7 +146,7 @@ public class ReportView implements IView {
         return categoryAmounts;
     }
 
-    private LineChart createMonthlyTrendsChart() {
+    private LineChart<String, Number> createMonthlyTrendsChart() {
         // Retrieve transactions
         List<Transaction> transactions = transactionModel.getTransactions();
 
@@ -153,16 +154,25 @@ public class ReportView implements IView {
         Map<YearMonth, List<Transaction>> transactionsByMonth = transactions.stream()
                 .collect(Collectors.groupingBy(transaction -> YearMonth.from(transaction.getDate())));
 
-        // Calculate total expenses for each month
+        // Calculate total expenses and income for each month
         Map<YearMonth, Double> monthlyExpenses = new TreeMap<>();
+        Map<YearMonth, Double> monthlyIncome = new TreeMap<>();
+
         for (Map.Entry<YearMonth, List<Transaction>> entry : transactionsByMonth.entrySet()) {
             YearMonth month = entry.getKey();
             List<Transaction> monthTransactions = entry.getValue();
+
             double totalExpense = monthTransactions.stream()
                     .filter(transaction -> transaction.getType() == Transaction.TransactionType.EXPENSE)
                     .mapToDouble(Transaction::getAmount)
                     .sum();
             monthlyExpenses.put(month, totalExpense);
+
+            double totalIncome = monthTransactions.stream()
+                    .filter(transaction -> transaction.getType() == Transaction.TransactionType.INCOME)
+                    .mapToDouble(Transaction::getAmount)
+                    .sum();
+            monthlyIncome.put(month, totalIncome);
         }
 
         // Create a line chart
@@ -171,27 +181,39 @@ public class ReportView implements IView {
         // Set chart properties
         lineChart.setTitle("Monthly Expense Trends");
         lineChart.getXAxis().setLabel("Month");
-        lineChart.getYAxis().setLabel("Total Expense");
+        lineChart.getYAxis().setLabel("Total Amount");
 
-        // Create series for data
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Expenses");
+        // Create series for expenses
+        XYChart.Series<String, Number> expenseSeries = new XYChart.Series<>();
+        expenseSeries.setName("Expenses");
 
-        // Add data to the series
+        // Add expense data to the series
         for (Map.Entry<YearMonth, Double> entry : monthlyExpenses.entrySet()) {
             YearMonth month = entry.getKey();
             double totalExpense = entry.getValue();
-            series.getData().add(new XYChart.Data<>(month.toString(), totalExpense));
+            expenseSeries.getData().add(new XYChart.Data<>(month.toString(), totalExpense));
+        }
+
+        // Create series for income
+        XYChart.Series<String, Number> incomeSeries = new XYChart.Series<>();
+        incomeSeries.setName("Income");
+
+        // Add income data to the series
+        for (Map.Entry<YearMonth, Double> entry : monthlyIncome.entrySet()) {
+            YearMonth month = entry.getKey();
+            double totalIncome = entry.getValue();
+            incomeSeries.getData().add(new XYChart.Data<>(month.toString(), totalIncome));
         }
 
         // Add the series to the line chart
-        lineChart.getData().add(series);
+        lineChart.getData().addAll(expenseSeries, incomeSeries);
 
         // Customize other chart properties as desired
 
         // Add the line chart to the root container
         return lineChart;
     }
+
 
 
     private BorderPane createExpenseComparisonChart() {
