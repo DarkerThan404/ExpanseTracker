@@ -217,6 +217,7 @@ public class ReportView implements IView {
         month2ComboBox.getItems().addAll(Month.values());
         categoryComboBox.getItems().add("All");
         categoryModel.getCategories().forEach(category -> categoryComboBox.getItems().add(category.getName()));
+        categoryComboBox.getItems().add(categoryModel.getDefaultCategory().getName());
 
         month1ComboBox.setValue(Month.JUNE);
         month2ComboBox.setValue(Month.MAY);
@@ -259,10 +260,6 @@ public class ReportView implements IView {
                 .filter(transaction -> selectedCategory.equals("All") || transaction.getCategory().equals(selectedCategory))
                 .collect(Collectors.toList());
 
-        // Calculate the total expenses for the selected months and category
-        double month1TotalExpense = calculateTotalExpense(month1Transactions);
-        double month2TotalExpense = calculateTotalExpense(month2Transactions);
-
         // Create a stacked bar chart
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
@@ -272,35 +269,34 @@ public class ReportView implements IView {
         stackedBarChart.setTitle("Expense Comparison");
         xAxis.setLabel("Categories");
         yAxis.setLabel("Total Expense");
-
-        // Create a series for each month
-        XYChart.Series<String, Number> month1Series = new XYChart.Series<>();
-        month1Series.setName(month1.toString());
-        XYChart.Series<String, Number> month2Series = new XYChart.Series<>();
-        month2Series.setName(month2.toString());
-
-        // Get the list of categories
-        List<String> categories = categoryModel.getCategories().stream()
-                .map(Category::getName)
-                .collect(Collectors.toList());
-
-        // Add category names to the category axis
-        xAxis.setCategories(FXCollections.observableArrayList(categories));
-
-        // Add data to the series
-        for (String category : categories) {
-            double month1Expense = calculateCategoryExpense(month1Transactions, category);
-            double month2Expense = calculateCategoryExpense(month2Transactions, category);
-
-            month1Series.getData().add(new XYChart.Data<>(category, month1Expense));
-            month2Series.getData().add(new XYChart.Data<>(category, month2Expense));
+        // Get the selected categories
+        List<String> selectedCategories;
+        if (selectedCategory.equals("All")) {
+            // If "All" is selected, include all categories
+            selectedCategories = categoryModel.getCategories().stream()
+                    .map(Category::getName)
+                    .collect(Collectors.toList());
+            selectedCategories.add(categoryModel.getDefaultCategory().getName());
+        } else {
+            // Include only the selected category
+            selectedCategories = Collections.singletonList(selectedCategory);
         }
 
-        // Clear previous data from the chart
-        stackedBarChart.getData().clear();
+        // Iterate over categories
+        for (String category : selectedCategories) {
+            // Create a series for the category
+            XYChart.Series<String, Number> categorySeries = new XYChart.Series<>();
+            categorySeries.setName(category);
 
-        // Add the series to the stacked bar chart
-        stackedBarChart.getData().addAll(month1Series, month2Series);
+            double month1expense = calculateCategoryExpense(month1Transactions, category);
+            double month2expense = calculateCategoryExpense(month2Transactions, category);
+
+            categorySeries.getData().add(new XYChart.Data<>(month1.toString(), month1expense));
+            categorySeries.getData().add(new XYChart.Data<>(month2.toString(), month2expense));
+
+            // Add the category series to the chart
+            stackedBarChart.getData().add(categorySeries);
+        }
 
         // Set the stacked bar chart in the center of the BorderPane
         chartContainer.setCenter(stackedBarChart);
@@ -313,6 +309,7 @@ public class ReportView implements IView {
                 totalExpense += transaction.getAmount();
             }
         }
+        System.out.println(totalExpense);
         return totalExpense;
     }
 
