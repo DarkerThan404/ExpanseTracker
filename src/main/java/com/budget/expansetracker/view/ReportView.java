@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -43,20 +44,57 @@ public class ReportView implements IView {
         root = new HBox();
         LineChart lineChart = createMonthlyTrendsChart();
         BorderPane borderPane = createExpenseComparisonChart();
+        BorderPane pieChart = createPieChartView();
 
         VBox graphContainer = new VBox();
         graphContainer.getChildren().add(lineChart);
         graphContainer.getChildren().add(borderPane);
 
-        // Create the pie chart and configure it
-        PieChart pieChart = createPieChart();
         root.getChildren().add(graphContainer);
         root.getChildren().add(pieChart);
     }
 
+    private BorderPane createPieChartView() {
+
+        Label timeLabel = new Label("Časové období:");
+        // Create ComboBox for selecting month
+        ComboBox<String> monthComboBox = new ComboBox<>();
+        List<String> options = new ArrayList<>();
+        options.add("All");
+        for (Month month : Month.values()) {
+            options.add(month.toString());
+        }
+        monthComboBox.setItems(FXCollections.observableArrayList(options));
+        HBox timeContainer = new HBox();
+        timeContainer.getChildren().addAll(timeLabel, monthComboBox);
+
+        // Create the PieChart
+        PieChart pieChart = createPieChart();
+
+        // Set up event listener for ComboBox
+        monthComboBox.setOnAction(event -> {
+            String selectedMonth = monthComboBox.getValue();
+            if (selectedMonth.equals("All")) {
+                // Show all transactions
+                updatePieChartData(pieChart , getCategoryAmounts(selectedMonth));
+            } else {
+                // Filter transactions based on selected month
+                Month month = Month.valueOf(selectedMonth);
+                updatePieChartData(pieChart, getCategoryAmounts(selectedMonth));
+            }
+        });
+
+        // Create a container to hold the ComboBox and PieChart
+        BorderPane container = new BorderPane();
+        container.setTop(timeContainer);
+        container.setCenter(pieChart);
+
+        return container;
+    }
+
     private PieChart createPieChart(){
         // Retrieve the amounts for each category
-        Map<Category, Double> categoryAmounts = getCategoryAmounts();
+        Map<Category, Double> categoryAmounts = getCategoryAmounts("All");
 
         // Create an observable list to hold the pie chart data
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
@@ -73,11 +111,29 @@ public class ReportView implements IView {
         return new PieChart(pieChartData);
     }
 
+
+    private void updatePieChartData(PieChart pieChart, Map<Category, Double> categoryAmounts) {
+        // Clear existing data
+
+        pieChart.getData().clear();
+
+        // Populate the pie chart data with the updated categories and amounts
+        for (Map.Entry<Category, Double> entry : categoryAmounts.entrySet()) {
+            Category category = entry.getKey();
+            Double amount = entry.getValue();
+            PieChart.Data data = new PieChart.Data(category.getName(), amount);
+            pieChart.getData().add(data);
+        }
+    }
+
     // Retrieve the amounts for each category from the transaction model
-    private Map<Category, Double> getCategoryAmounts() {
+    private Map<Category, Double> getCategoryAmounts(String month) {
         Map<Category, Double> categoryAmounts = new HashMap<>();
 
-        List<Transaction> transactions = transactionModel.getTransactions();
+        List<Transaction> transactions = transactionModel.getTransactions().stream()
+                .filter(transaction -> transaction.getDate().getMonth().toString().equalsIgnoreCase(month) || month.equalsIgnoreCase("All"))
+                .collect(Collectors.toList());
+
         for (Transaction transaction : transactions) {
             Category category = transaction.getCategory();
             double amount = transaction.getAmount();
