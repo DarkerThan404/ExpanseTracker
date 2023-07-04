@@ -183,12 +183,14 @@ public class ReportView implements IView {
         // Filter transactions based on months and selected category
         List<Transaction> month1Transactions = transactions.stream()
                 .filter(transaction -> transaction.getDate().getMonth() == month1)
-                .filter(transaction -> selectedCategory.equals("All") || transaction.getCategory().equals(selectedCategory))
+                .filter(transaction -> selectedCategory.equals("All") || transaction.getCategory().getName().equals(selectedCategory))
                 .collect(Collectors.toList());
         List<Transaction> month2Transactions = transactions.stream()
                 .filter(transaction -> transaction.getDate().getMonth() == month2)
-                .filter(transaction -> selectedCategory.equals("All") || transaction.getCategory().equals(selectedCategory))
+                .filter(transaction -> selectedCategory.equals("All") || transaction.getCategory().getName().equals(selectedCategory))
                 .collect(Collectors.toList());
+
+        System.out.println(month1Transactions.isEmpty());
 
         // Create a stacked bar chart
         CategoryAxis xAxis = new CategoryAxis();
@@ -234,9 +236,11 @@ public class ReportView implements IView {
 
     private double calculateCategoryExpense(List<Transaction> transactions, String category) {
         double totalExpense = 0.0;
+        System.out.println(transactions.isEmpty());
         for (Transaction transaction : transactions) {
             if (transaction.getCategory().getName().equals(category) && transaction.getType().equals(Transaction.TransactionType.EXPENSE)) {
                 totalExpense += transaction.getAmount();
+                System.out.println("Triggerd if in loop calculate category expense");
             }
         }
         System.out.println(totalExpense);
