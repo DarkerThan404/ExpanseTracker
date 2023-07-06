@@ -32,10 +32,11 @@ public class ReportView implements IView {
         this.reportController = reportController;
         this.categoryModel = categoryModel;
         this.transactionModel = transactionModel;
-        createView();
+
     }
     @Override
     public Node getNode() {
+        createView();
         return root;
     }
 
