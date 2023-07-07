@@ -184,10 +184,16 @@ public class OverviewController implements IController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            //TODO: Delete the category from your data structure or database
+            // Update the transactions to remove the reference to the deleted category
+
+            for (Transaction transaction : transactions.getTransactions()) {
+                if (transaction.getCategory().equals(category)) {
+                    transaction.setCategory(categories.getDefaultCategory()); // Set category to null or assign a default category
+                }
+            }
 
             // Removes the category box from the UI and data structure
-            categories.remove(category);
+            storageManager.deleteCategory(category);
         }
     }
 }

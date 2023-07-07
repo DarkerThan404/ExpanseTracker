@@ -3,6 +3,7 @@ package com.budget.expansetracker;
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -77,6 +78,33 @@ public class DataStorageManager {
         } catch (IOException e) {
             // Handle any exceptions that occur during file writing
             System.out.println("Error writing data: " + e.getMessage());
+        }
+    }
+
+    public void deleteCategory(Category category) {
+        // Remove the category from the category model
+        categories.remove(category);
+
+        // Update the category file
+        updateCategoryFile();
+    }
+
+    private void updateCategoryFile() {
+        try {
+            saveCategoriesToFile(getCategoryModel().getCategories());
+        } catch (IOException e) {
+            // Handle the exception, e.g., log an error or show an error message
+            e.printStackTrace();
+        }
+    }
+
+    private void saveCategoriesToFile(List<Category> categories) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(CATEGORY_FILE_PATH))) {
+            for (Category category : categories) {
+                String line = category.getID() + "," + category.getName() + "," + category.getCurrent() + "," + category.getGoal();
+                writer.write(line);
+                writer.newLine();
+            }
         }
     }
 
