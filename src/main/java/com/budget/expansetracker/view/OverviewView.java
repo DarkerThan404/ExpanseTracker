@@ -45,10 +45,10 @@ public class OverviewView implements IView {
         this.controller = controller;
         this.categoryModel = categoryModel;
         this.transactionModel = transactionModel;
-        createView();
     }
     @Override
     public Node getNode(){
+        createView();
         return root;
     }
 
