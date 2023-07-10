@@ -67,7 +67,6 @@ public class DataStorageManager {
     }
 
     public void addTransactionToFile(Transaction transaction) {
-        System.out.println("Saved transaction");
 
         // Append the new category's data to the categories file
         try {
