@@ -106,9 +106,20 @@ public class OverviewController implements IController {
     }
 
     public void handleEditCategory(Category category) {
+        System.out.println(category.getName());
+        System.out.println(category.getGoal());
         Dialog<Category> dialog = createEditCategoryDialog(category);
-        Optional<Category> editedCategory = dialog.showAndWait();
-        if(editedCategory.isPresent()){
+        Optional<Category> result = dialog.showAndWait();
+        if(result.isPresent()){
+            Category editedCategory = result.get();
+
+            // Update the current and goal properties with the new values
+            category.setName(editedCategory.getName());
+            category.setCurrent(editedCategory.getCurrent());
+            category.setGoal(editedCategory.getGoal());
+            System.out.println(category.getName());
+            System.out.println(category.getGoal());
+            view.updateCategoryBoxInList(category);
 
         }
 

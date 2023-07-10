@@ -157,6 +157,16 @@ public class OverviewView implements IView {
         return categoryBox;
     }
 
+    public void updateCategoryBoxInList(Category category) {
+        ObservableList<Category> categories = categoryModel.getCategories();
+        int index = categories.indexOf(category);
+        if (index >= 0) {
+            categoryListView.refresh(); // Refresh the ListView to ensure the cell is updated
+        }
+    }
+
+
+
     private ListView<Transaction> createTransactionView(List<Transaction> recentTransactions){
 
         ListView<Transaction> transactionsListView = new ListView<>();
