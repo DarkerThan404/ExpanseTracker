@@ -106,8 +106,6 @@ public class OverviewController implements IController {
     }
 
     public void handleEditCategory(Category category) {
-        System.out.println(category.getName());
-        System.out.println(category.getGoal());
         Dialog<Category> dialog = createEditCategoryDialog(category);
         Optional<Category> result = dialog.showAndWait();
         if(result.isPresent()){
@@ -117,12 +115,9 @@ public class OverviewController implements IController {
             category.setName(editedCategory.getName());
             category.setCurrent(editedCategory.getCurrent());
             category.setGoal(editedCategory.getGoal());
-            System.out.println(category.getName());
-            System.out.println(category.getGoal());
+
             view.updateCategoryBoxInList(category);
-
         }
-
     }
 
     private Dialog<Category> createEditCategoryDialog(Category category){
