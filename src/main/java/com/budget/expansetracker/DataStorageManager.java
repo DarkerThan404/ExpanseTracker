@@ -89,7 +89,7 @@ public class DataStorageManager {
         updateCategoryFile();
     }
 
-    private void updateCategoryFile() {
+    public void updateCategoryFile() {
         try {
             saveCategoriesToFile(getCategoryModel().getCategories());
         } catch (IOException e) {

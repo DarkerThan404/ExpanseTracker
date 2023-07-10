@@ -117,6 +117,8 @@ public class OverviewController implements IController {
             category.setGoal(editedCategory.getGoal());
 
             view.updateCategoryBoxInList(category);
+
+            storageManager.updateCategoryFile();
         }
     }
 
