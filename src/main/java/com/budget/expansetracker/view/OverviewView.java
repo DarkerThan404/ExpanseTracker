@@ -161,7 +161,7 @@ public class OverviewView implements IView {
         ObservableList<Category> categories = categoryModel.getCategories();
         int index = categories.indexOf(category);
         if (index >= 0) {
-            categoryListView.refresh(); // Refresh the ListView to ensure the cell is updated
+            categoryListView.getItems().set(index, category);
         }
     }
 
