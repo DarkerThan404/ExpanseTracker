@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
 public class DataStorageManager {
@@ -22,7 +23,7 @@ public class DataStorageManager {
 
     public DataStorageManager(){
         loadDataFromFiles();
-        calculateCurrentForAllCategories();
+        calculateCurrentForCurrentMonth();
     }
 
 
@@ -165,4 +166,37 @@ public class DataStorageManager {
         }
         return total;
     }
+
+    public void resetCurrentValues() {
+        for (Category category : categories.getCategories()) {
+            category.setCurrent(0.0);
+        }
+    }
+
+
+    public void calculateCurrentForCurrentMonth() {
+
+        resetCurrentValues();
+        // Get the current month and year
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        int currentYear = currentDate.getYear();
+
+        for (Category category : categories.getCategories()) {
+            double current = 0.0;
+
+            for (Transaction transaction : transactions.getTransactions()) {
+                LocalDate transactionDate = transaction.getDate();
+                int transactionMonth = transactionDate.getMonthValue();
+                int transactionYear = transactionDate.getYear();
+
+                if (transactionMonth == currentMonth && transactionYear == currentYear && transaction.getCategory() == category) {
+                    current += transaction.getAmount();
+                }
+            }
+
+            category.setCurrent(current);
+        }
+    }
+
 }
