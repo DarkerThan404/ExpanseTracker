@@ -179,7 +179,7 @@ public class DataStorageManager {
         resetCurrentValues();
         // Get the current month and year
         LocalDate currentDate = LocalDate.now();
-        int currentMonth = Month.MAY.getValue();//currentDate.getMonthValue();
+        int currentMonth = Month.JUNE.getValue();//currentDate.getMonthValue();
         int currentYear = 2023;//currentDate.getYear();
 
         for (Category category : categories.getCategories()) {
