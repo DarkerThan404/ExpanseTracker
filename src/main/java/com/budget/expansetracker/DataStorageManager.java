@@ -69,7 +69,7 @@ public class DataStorageManager {
     }
 
     public void addTransactionToFile(Transaction transaction) {
-
+        calculateCurrentForCurrentMonth();
         // Append the new category's data to the categories file
         try {
             FileWriter fileWriter = new FileWriter(TRANSACTION_FILE_PATH, true); // Open file in append mode
