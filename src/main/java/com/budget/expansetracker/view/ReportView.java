@@ -80,7 +80,6 @@ public class ReportView implements IView {
                 updatePieChartData(pieChart , getCategoryAmounts(selectedMonth));
             } else {
                 // Filter transactions based on selected month
-                Month month = Month.valueOf(selectedMonth);
                 updatePieChartData(pieChart, getCategoryAmounts(selectedMonth));
             }
         });
@@ -132,17 +131,16 @@ public class ReportView implements IView {
         Map<Category, Double> categoryAmounts = new HashMap<>();
 
         List<Transaction> transactions = transactionModel.getTransactions().stream()
-                .filter(transaction -> transaction.getDate().getMonth().toString().equalsIgnoreCase(month) || month.equalsIgnoreCase("All"))
+                .filter(transaction -> (transaction.getDate().getMonth().toString().equalsIgnoreCase(month) || month.equalsIgnoreCase("All"))
+                        && transaction.getType() == Transaction.TransactionType.EXPENSE)
                 .collect(Collectors.toList());
 
         for (Transaction transaction : transactions) {
             Category category = transaction.getCategory();
             double amount = transaction.getAmount();
-
             // Add the amount to the existing total for the category
             categoryAmounts.merge(category, amount, Double::sum);
         }
-
         return categoryAmounts;
     }
 
