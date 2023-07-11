@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 public class DataStorageManager {
@@ -179,8 +180,8 @@ public class DataStorageManager {
         resetCurrentValues();
         // Get the current month and year
         LocalDate currentDate = LocalDate.now();
-        int currentMonth = currentDate.getMonthValue();
-        int currentYear = currentDate.getYear();
+        int currentMonth = Month.MAY.getValue();//currentDate.getMonthValue();
+        int currentYear = 2023;//currentDate.getYear();
 
         for (Category category : categories.getCategories()) {
             double current = 0.0;
