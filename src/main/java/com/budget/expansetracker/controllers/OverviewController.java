@@ -11,7 +11,6 @@ import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -193,13 +192,11 @@ public class OverviewController implements IController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Update the transactions to remove the reference to the deleted category
-
             for (Transaction transaction : transactions.getTransactions()) {
                 if (transaction.getCategory().equals(category)) {
                     transaction.setCategory(categories.getDefaultCategory()); // Set category to null or assign a default category
                 }
             }
-
             // Removes the category box from the UI and data structure
             storageManager.deleteCategory(category);
         }

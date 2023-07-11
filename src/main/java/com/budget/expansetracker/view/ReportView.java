@@ -114,7 +114,6 @@ public class ReportView implements IView {
 
     private void updatePieChartData(PieChart pieChart, Map<Category, Double> categoryAmounts) {
         // Clear existing data
-
         pieChart.getData().clear();
 
         // Populate the pie chart data with the updated categories and amounts
@@ -205,8 +204,6 @@ public class ReportView implements IView {
 
         // Add the series to the line chart
         lineChart.getData().addAll(expenseSeries, incomeSeries);
-
-        // Customize other chart properties as desired
 
         // Add the line chart to the root container
         return lineChart;
@@ -302,11 +299,9 @@ public class ReportView implements IView {
             if (!month2.equals(month1)) {
                 categorySeries.getData().add(new XYChart.Data<>(month2.toString(), month2expense));
             }
-
-                // Add the category series to the chart
+            // Add the category series to the chart
             stackedBarChart.getData().add(categorySeries);
         }
-
         // Set the stacked bar chart in the center of the BorderPane
         chartContainer.setCenter(stackedBarChart);
     }

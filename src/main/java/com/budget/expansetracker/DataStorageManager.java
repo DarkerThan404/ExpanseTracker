@@ -11,7 +11,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 
 public class DataStorageManager {
@@ -53,8 +52,6 @@ public class DataStorageManager {
     }
 
     public void addCategoryToFile(Category category) {
-
-        System.out.println("Saved category");
 
         // Append the new category's data to the categories file
         try {
@@ -148,25 +145,6 @@ public class DataStorageManager {
         return workingDirectory + File.separator + fileName;
     }
 
-    public void calculateCurrentForAllCategories() {
-        for (Category category : categories.getCategories()) {
-            double current = calculateCurrentForCategory(category);
-            category.setCurrent(current);
-        }
-    }
-
-    private double calculateCurrentForCategory(Category category) {
-        double total = 0.0;
-        for (Transaction transaction : transactions.getTransactions()) {
-            if (transaction.getCategory() == category) {
-                if (transaction.getType() == Transaction.TransactionType.EXPENSE) {
-                    total += transaction.getAmount();
-                }
-            }
-        }
-        return total;
-    }
-
     public void resetCurrentValues() {
         for (Category category : categories.getCategories()) {
             category.setCurrent(0.0);
@@ -194,7 +172,6 @@ public class DataStorageManager {
                     current += transaction.getAmount();
                 }
             }
-
             category.setCurrent(current);
         }
     }

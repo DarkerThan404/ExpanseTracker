@@ -89,7 +89,6 @@ public class OverviewView implements IView {
         // Create and configure the categories component
         categoriesBox = new VBox();
         categoriesBox.setSpacing(5);
-        Label categoriesLabel = new Label("Categories:");
 
         addCategoryButton = new Button("Add Category");
         addCategoryButton.setOnAction(controller::handleAddCategoryButton);
