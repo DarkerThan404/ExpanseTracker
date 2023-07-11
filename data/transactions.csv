@@ -1,6 +1,6 @@
-0,TESCO,2023-05-09,3300.0,EXPENSE,1,Jídlo
+0,TESCO,2023-05-09,2800.0,EXPENSE,1,Jídlo
 7,SEGA,2023-05-15,300.0,EXPENSE,0,Hraní na konsoli
-9,WOK,2023-05-12,150.0,EXPENSE,1,rýžové nudle s omáčkou teriaky
+9,WOK,2023-05-12,150.0,EXPENSE,4,rýžové nudle s omáčkou teriaky
 10,Blizzard,2023-06-05,500.0,EXPENSE,0,Hra na konzoli
 1,Steam,2023-06-22,800.0,EXPENSE,0,Hra na konzoli
 2,Billa,2023-06-26,1900.0,EXPENSE,1,Koupě ve velkoobchodě
@@ -10,4 +10,28 @@
 6,PS5,2023-05-19,185.0,EXPENSE,0,Hra na playstation ve slevě
 11,Práce,2023-05-15,20000.0,INCOME,-9999,
 12,Práce,2023-06-15,22135.0,INCOME,-9999,
-13,Vlak,2023-05-05,540.0,EXPENSE,3,Lístky ve vlaku
+13,Vlak,2023-05-05,540.0,EXPENSE,3,Lístky na vlak
+14,Vlak,2023-05-12,540.0,EXPENSE,3,Lístky na vlak
+15,Vlak,2023-05-18,435.0,EXPENSE,3,Lístky na vlak
+16,Vlak,2023-05-26,540.0,EXPENSE,3,Lístky na vlak
+17,Vlak,2023-05-31,320.0,EXPENSE,3,Lístky na vlak
+18,Nájem,2023-05-15,3300.0,EXPENSE,2,Placení nájmu
+19,Plyn,2023-05-31,1100.0,EXPENSE,2,
+20,Elektřina,2023-05-01,900.0,EXPENSE,2,
+21,Odpad,2023-05-20,750.0,EXPENSE,2,
+22,Wok,2023-05-02,170.0,EXPENSE,4,Hovězí udon
+23,KFC,2023-05-04,240.0,EXPENSE,4,Classic box
+24,McDonalds,2023-05-05,120.0,EXPENSE,4,McMenu
+25,Wok,2023-05-08,170.0,EXPENSE,4,Rýžové nudle s krevetami
+26,KFC,2023-05-10,250.0,EXPENSE,4,Twister box s extra omáčkou
+27,Thai station,2023-05-11,300.0,EXPENSE,4,Pad thai s pitím
+28,KFC,2023-05-16,300.0,EXPENSE,4,Kyblík Classic
+29,McDonalds,2023-05-19,140.0,EXPENSE,4,Twister menu
+30,Wok,2023-05-23,170.0,EXPENSE,4,Udon s hovezím
+31,Thai station,2023-05-29,300.0,EXPENSE,4,Pad thai s pitím
+32,KFC,2023-05-30,300.0,EXPENSE,4,Kyblík
+33,Primark,2023-05-18,330.0,EXPENSE,0,Nová čepice
+34,Steam,2023-05-19,900.0,EXPENSE,0,Nákup her v letní slevě
+35,Van Graff,2023-05-16,600.0,EXPENSE,0,Tričko a kalhoty
+36,Aquapark,2023-05-14,300.0,EXPENSE,0,Vstupný
+37,Billa,2023-05-20,1700.0,EXPENSE,1,Nákup na doma

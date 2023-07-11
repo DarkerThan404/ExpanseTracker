@@ -48,6 +48,7 @@ public class TransactionsController implements IController {
         result.ifPresent(transaction -> {
             transactions.add(transaction);
         });
+        storageManager.calculateCurrentForCurrentMonth();
     }
 
     private Dialog<Transaction> createTransactionDialog(){
