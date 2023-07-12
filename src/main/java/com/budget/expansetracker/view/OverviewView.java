@@ -26,7 +26,6 @@ public class OverviewView implements IView {
     private BorderPane root;
 
     private Label balanceLabel;
-    private Text balanceText;
     private DoubleProperty balanceProperty;
 
     private VBox categoriesBox;
@@ -59,14 +58,30 @@ public class OverviewView implements IView {
         transactionModel.calculateInitialBalance();
         // Create and configure the balance component
         balanceLabel = new Label("Balance:");
+        balanceLabel.getStyleClass().add("balance-label");
+
         balanceProperty = new SimpleDoubleProperty();
         balanceLabel.textProperty().bind(balanceProperty.asString());
 
         double initialBalance = transactionModel.getBalance();
         balanceProperty.set(initialBalance);
 
+        double epsilon = 0.001; // Choose an appropriate epsilon value for your application
+
+        // Determine the initial balance value and apply the appropriate style class
+        if (Math.abs(initialBalance) > epsilon) {
+            if (initialBalance > 0) {
+                balanceLabel.getStyleClass().add("balance-positive");
+            } else {
+                balanceLabel.getStyleClass().add("balance-negative");
+            }
+        } else {
+            balanceLabel.getStyleClass().add("balance-zero");
+        }
+
         HBox balanceBox = new HBox(balanceLabel);
         balanceBox.setAlignment(Pos.CENTER);
+        balanceBox.prefHeightProperty().bind(root.heightProperty().multiply(0.2));
 
         //categories = FXCollections.observableArrayList();
         categoryListView = new ListView<>();
@@ -104,6 +119,11 @@ public class OverviewView implements IView {
         List<Transaction> recentTransactions = controller.getRecentTransactions(recentTransactionCount);
         ListView<Transaction> transactionsListView = createTransactionView(recentTransactions);
 
+        double desiredWidth = 320;
+
+        categoriesBox.setPrefWidth(desiredWidth);
+        transactionsBox.setPrefWidth(desiredWidth);
+
 
         transactionsBox.getChildren().add(transactionsLabel);
         transactionsBox.getChildren().add(transactionsListView);
@@ -132,6 +152,16 @@ public class OverviewView implements IView {
                     return current / goal;
                 }, currentProperty, goalProperty)
         );
+
+        double progress = category.getCurrent() / category.getGoal();
+
+        if (progress > 1.0) {
+            progressBar.getStyleClass().add("over-limit");
+        } else if (progress < 1.0) {
+            progressBar.getStyleClass().add("under-limit");
+        } else {
+            progressBar.getStyleClass().add("goal-met");
+        }
 
         Label progressLabel = new Label(String.format("%.0f / %.0f", category.getCurrent(), category.getGoal()));
 
