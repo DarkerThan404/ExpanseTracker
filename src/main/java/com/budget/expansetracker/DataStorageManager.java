@@ -125,10 +125,31 @@ public class DataStorageManager {
     private void saveCategoriesToFile(List<Category> categories) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(CATEGORY_FILE_PATH))) {
             for (Category category : categories) {
-                String line = category.getID() + "," + category.getName() + "," + category.getCurrent() + "," + category.getGoal();
+                String line = category.toCsv();
                 writer.write(line);
                 writer.newLine();
             }
+        }
+    }
+
+    public void removeTransactions(List<Transaction> selectedTransactions) {
+        transactions.getTransactions().removeAll(selectedTransactions);
+        saveTransactionsToFile();
+    }
+
+
+
+    public void saveTransactionsToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(TRANSACTION_FILE_PATH))) {
+            // Iterate through the transactions in the data model and write them to the file
+            for (Transaction transaction : transactions.getTransactions()) {
+                String line = transaction.toCsv();
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            // Handle the exception, e.g., display an error message
+            e.printStackTrace();
         }
     }
 

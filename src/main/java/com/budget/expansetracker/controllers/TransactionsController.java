@@ -16,7 +16,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TransactionsController implements IController {
 
@@ -170,5 +172,13 @@ public class TransactionsController implements IController {
         });
 
         return dialog;
+    }
+
+    public void handleDeleteTransactions() {
+        List<Transaction> selectedTransactions = transactions.getTransactions().stream()
+                .filter(Transaction::isSelected)
+                .collect(Collectors.toList());
+
+        storageManager.removeTransactions(selectedTransactions);
     }
 }

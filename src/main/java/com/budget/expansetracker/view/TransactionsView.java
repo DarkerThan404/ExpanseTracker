@@ -161,11 +161,7 @@ public class TransactionsView implements IView{
         });
 
         confirmDeleteButton.setOnAction(event -> {
-            // Handle deletion logic here
-            List<Transaction> selectedTransactions = transactionModel.getTransactions().stream()
-                    .filter(Transaction::isSelected)
-                    .collect(Collectors.toList());
-            transactionModel.removeTransactions(selectedTransactions);
+            controller.handleDeleteTransactions();
 
             // Clear selection
             for (Transaction transaction : transactionTableView.getItems()) {

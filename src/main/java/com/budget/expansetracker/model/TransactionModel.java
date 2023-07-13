@@ -68,11 +68,4 @@ public class TransactionModel {
         return transactions;
     }
 
-    /**
-     * Removes selected transaction from list
-     * @param selectedTransactions list of transactions to remove
-     */
-    public void removeTransactions(List<Transaction> selectedTransactions) {
-        transactions.removeAll(selectedTransactions);
-    }
 }
