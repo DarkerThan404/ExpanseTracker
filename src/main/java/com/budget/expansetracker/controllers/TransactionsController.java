@@ -174,6 +174,9 @@ public class TransactionsController implements IController {
         return dialog;
     }
 
+    /**
+     * Function that handles deletion of transactions
+     */
     public void handleDeleteTransactions() {
         List<Transaction> selectedTransactions = transactions.getTransactions().stream()
                 .filter(Transaction::isSelected)

@@ -132,14 +132,19 @@ public class DataStorageManager {
         }
     }
 
+    /**
+     * Removes transactions from list and saves tem to a file
+     * @param selectedTransactions
+     */
     public void removeTransactions(List<Transaction> selectedTransactions) {
         transactions.getTransactions().removeAll(selectedTransactions);
         saveTransactionsToFile();
     }
 
-
-
-    public void saveTransactionsToFile() {
+    /**
+     * Stores transactions to a file
+     */
+    private void saveTransactionsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(TRANSACTION_FILE_PATH))) {
             // Iterate through the transactions in the data model and write them to the file
             for (Transaction transaction : transactions.getTransactions()) {
