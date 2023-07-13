@@ -1,6 +1,5 @@
 package com.budget.expansetracker.model;
 
-import com.budget.expansetracker.Category;
 import com.budget.expansetracker.DataStorageManager;
 import com.budget.expansetracker.Transaction;
 import javafx.collections.FXCollections;
@@ -24,15 +23,22 @@ public class TransactionModel {
     }
 
     /**
-     * Called once at start of the application to set nextID to highest possible number
-     * @param nextID
+     * Called once at start of the application to set nextID to the highest possible number
+     * @param nextID Is passed as next id
      */
     public void setNextID(int nextID){ this.nextID = nextID;}
 
+    /**
+     * Getter for balance
+     * @return
+     */
     public double getBalance() {
         return balance;
     }
 
+    /**
+     * Function that calculates initial balance
+     */
     public void calculateInitialBalance() {
         balance = 0.0;
         for (Transaction transaction : transactions) {
@@ -44,29 +50,29 @@ public class TransactionModel {
         }
     }
 
-    private void updateBalance(Transaction transaction) {
-        if (transaction.getType() == Transaction.TransactionType.INCOME) {
-            balance += transaction.getAmount();
-        } else {
-            balance -= transaction.getAmount();
-        }
-    }
-
+    /**
+     * Function that adds transaction to list
+     * @param transaction instance to add
+     */
     public void add(Transaction transaction){
         transaction.setID(nextID++);
         transactions.add(transaction);
         dataStorageManager.addTransactionToFile(transaction);
     }
 
-    public void remove(Transaction transaction){
-        transactions.remove(transaction);
-    }
-
+    /**
+     * Getter for transactions
+     * @return
+     */
     public ObservableList<Transaction> getTransactions(){
         return transactions;
     }
 
-    public void removeTranasactions(List<Transaction> selectedTransactions) {
+    /**
+     * Removes selected transaction from list
+     * @param selectedTransactions list of transactions to remove
+     */
+    public void removeTransactions(List<Transaction> selectedTransactions) {
         transactions.removeAll(selectedTransactions);
     }
 }

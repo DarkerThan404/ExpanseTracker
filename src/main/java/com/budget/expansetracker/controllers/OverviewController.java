@@ -35,26 +35,37 @@ public class OverviewController implements IController {
         view = new OverviewView(this, categories, transactions);
     }
 
-    public void handleAddCategoryButton(ActionEvent event){
-        // Create the dialog
+    /**
+     * Function that handles adding category
+     * @param event
+     */
+    public void handleAddCategory(ActionEvent event) {
+        Dialog<Category> dialog = createAddCategoryDialog();
+        Optional<Category> result = dialog.showAndWait();
+
+        result.ifPresent(category -> {
+            categories.add(category);
+        });
+    }
+
+    /**
+     * Creates dialog for adding category
+     * @return dialog
+     */
+    private Dialog<Category> createAddCategoryDialog() {
         Dialog<Category> dialog = new Dialog<>();
         dialog.setTitle("Add Category");
         dialog.setHeaderText("Enter the category name:");
 
-        // Set the dialog content
         TextField categoryNameField = new TextField();
         TextField goalField = new TextField();
-        GridPane grid = new GridPane();
-        grid.addRow(0, new Label("Category Name:"), categoryNameField);
-        grid.addRow(1, new Label("Goal:"), goalField);
+        GridPane grid = createCategoryDialogGrid(categoryNameField, goalField);
         dialog.getDialogPane().setContent(grid);
 
-        // Add buttons to the dialog
         ButtonType addButton = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(addButton, cancelButton);
 
-        // Set the result converter
         dialog.setResultConverter(buttonType -> {
             if (buttonType == addButton) {
                 String categoryName = categoryNameField.getText();
@@ -63,29 +74,38 @@ public class OverviewController implements IController {
                 try {
                     goal = Double.parseDouble(goalField.getText());
                 } catch (NumberFormatException e) {
-                    // Handle the error
                     System.err.println("Invalid goal value: " + goalField.getText());
                     return null;
                 }
 
-                boolean isDuplicate = categories.getCategories().stream().anyMatch(category -> category.getName().equalsIgnoreCase(categoryName));
+                boolean isDuplicate = categories.getCategories().stream()
+                        .anyMatch(category -> category.getName().equalsIgnoreCase(categoryName));
                 if (isDuplicate) {
-                    // Handle the duplicate name
                     System.err.println("Category name already exists: " + categoryName);
                     return null;
                 }
+
                 int ID = nextID++;
-                return new Category(ID, categoryName, 0,  goal);
+                return new Category(ID, categoryName, 0, goal);
             }
+
             return null;
         });
 
-        // Show the dialog and handle the user's input
-        Optional<Category> result = dialog.showAndWait();
-        result.ifPresent(category -> {
-            // This code will be executed when the user clicks the "Add" button
-            categories.add(category);
-        });
+        return dialog;
+    }
+
+    /**
+     * Creates grid pane for dialog
+     * @param categoryNameField name field
+     * @param goalField goal field
+     * @return grid pane
+     */
+    private GridPane createCategoryDialogGrid(TextField categoryNameField, TextField goalField) {
+        GridPane grid = new GridPane();
+        grid.addRow(0, new Label("Category Name:"), categoryNameField);
+        grid.addRow(1, new Label("Goal:"), goalField);
+        return grid;
     }
 
     @Override
@@ -93,6 +113,11 @@ public class OverviewController implements IController {
         return view.getNode();
     }
 
+    /**
+     * Function that returns recent transaction
+     * @param numRecentTransactions number of transaction to retrieve
+     * @return transaction list
+     */
     public List<Transaction> getRecentTransactions(int numRecentTransactions) {
         List<Transaction> allTransactions = transactions.getTransactions();
         Collections.sort(allTransactions, (t1,t2) -> t2.getDate().compareTo(t1.getDate()));
@@ -104,6 +129,10 @@ public class OverviewController implements IController {
         return recentTransactions;
     }
 
+    /**
+     * Function that handles editing category
+     * @param category
+     */
     public void handleEditCategory(Category category) {
         Dialog<Category> dialog = createEditCategoryDialog(category);
         Optional<Category> result = dialog.showAndWait();
@@ -121,6 +150,11 @@ public class OverviewController implements IController {
         }
     }
 
+    /**
+     * Helper function that creates dialog for editing category
+     * @param category instance to edit
+     * @return dialog
+     */
     private Dialog<Category> createEditCategoryDialog(Category category){
         Dialog<Category> dialog = new Dialog<>();
         dialog.setTitle("Edit category");
@@ -183,6 +217,10 @@ public class OverviewController implements IController {
         return dialog;
     }
 
+    /**
+     * Function that handles category deletion
+     * @param category instance to delete
+     */
     public void handleDeleteCategory(Category category) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Delete Category");

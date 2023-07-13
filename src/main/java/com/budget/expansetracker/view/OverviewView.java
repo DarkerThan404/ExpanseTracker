@@ -127,7 +127,7 @@ public class OverviewView implements IView {
         categoriesBox.setSpacing(5);
 
         addCategoryButton = new Button("Add Category");
-        addCategoryButton.setOnAction(controller::handleAddCategoryButton);
+        addCategoryButton.setOnAction(controller::handleAddCategory);
 
         Label remainder = new Label("Categories current values reset to zero at the start of the month.");
         remainder.getStyleClass().add("remainder");

@@ -37,18 +37,27 @@ public class CategoryModel {
      */
     public void setNextID(int nextID){ this.nextID = nextID;}
 
-    public void prepend(Category category){
-        categories.add(0,category);
-    }
-
+    /**
+     * Removes category from the lsit
+     * @param category instance to remove
+     */
     public void remove(Category category){
         categories.remove(category);
     }
 
+    /**
+     * Getter for categories
+     * @return
+     */
     public ObservableList<Category> getCategories(){
         return categories;
     }
 
+    /**
+     * Function that return category based on its ID
+     * @param categoryID key for finding category
+     * @return category
+     */
     public Category getCategoryByID(int categoryID){
         for (Category category : categories) {
             if (category.getID() == categoryID) {
@@ -61,6 +70,10 @@ public class CategoryModel {
         return null; // Category not found
     }
 
+    /**
+     * Getter for default category
+     * @return
+     */
     public Category getDefaultCategory() {
         return defaultCategory;
     }

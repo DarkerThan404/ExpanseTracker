@@ -40,9 +40,12 @@ public class ReportView implements IView {
         return root;
     }
 
+    /**
+     * Creates content view for report
+     */
     private void createView(){
         root = new HBox();
-        LineChart lineChart = createMonthlyTrendsChart();
+        LineChart<String, Number> lineChart = createMonthlyTrendsChart();
         BorderPane borderPane = createExpenseComparisonChart();
         BorderPane pieChart = createPieChartView();
 
@@ -54,6 +57,10 @@ public class ReportView implements IView {
         root.getChildren().add(pieChart);
     }
 
+    /**
+     * Creates pieChart box for report view
+     * @return Borderpane that represents pieChart
+     */
     private BorderPane createPieChartView() {
 
         Label timeLabel = new Label("Time period");
@@ -72,7 +79,6 @@ public class ReportView implements IView {
         // Create the PieChart
         PieChart pieChart = createPieChart();
 
-        // Set up event listener for ComboBox
         monthComboBox.setOnAction(event -> {
             String selectedMonth = monthComboBox.getValue();
             if (selectedMonth.equals("All")) {
@@ -92,6 +98,10 @@ public class ReportView implements IView {
         return container;
     }
 
+    /**
+     * Function creating pie chart
+     * @return pie chart
+     */
     private PieChart createPieChart(){
         // Retrieve the amounts for each category
         Map<Category, Double> categoryAmounts = getCategoryAmounts("All");
@@ -106,12 +116,15 @@ public class ReportView implements IView {
             PieChart.Data data = new PieChart.Data(category.getName(), amount);
             pieChartData.add(data);
         }
-
-        // Create the pie chart and configure it
+        // Create the pie chart
         return new PieChart(pieChartData);
     }
 
-
+    /**
+     * Update function that is called when interacting with pie chart in any way
+     * @param pieChart Instance to update
+     * @param categoryAmounts Data to update to
+     */
     private void updatePieChartData(PieChart pieChart, Map<Category, Double> categoryAmounts) {
         // Clear existing data
         pieChart.getData().clear();
@@ -125,24 +138,31 @@ public class ReportView implements IView {
         }
     }
 
-    // Retrieve the amounts for each category from the transaction model
+    /**
+     * Helper function for calculating category amounts for specific month
+     * @param month Period to calculate data for
+     * @return Map of category amounts that period
+     */
     private Map<Category, Double> getCategoryAmounts(String month) {
         Map<Category, Double> categoryAmounts = new HashMap<>();
 
         List<Transaction> transactions = transactionModel.getTransactions().stream()
                 .filter(transaction -> (transaction.getDate().getMonth().toString().equalsIgnoreCase(month) || month.equalsIgnoreCase("All"))
-                        && transaction.getType() == Transaction.TransactionType.EXPENSE)
-                .collect(Collectors.toList());
+                        && transaction.getType() == Transaction.TransactionType.EXPENSE).toList();
 
         for (Transaction transaction : transactions) {
             Category category = transaction.getCategory();
             double amount = transaction.getAmount();
-            // Add the amount to the existing total for the category
+
             categoryAmounts.merge(category, amount, Double::sum);
         }
         return categoryAmounts;
     }
 
+    /**
+     * Creates monthly chart for report view
+     * @return Line chart
+     */
     private LineChart<String, Number> createMonthlyTrendsChart() {
         // Retrieve transactions
         List<Transaction> transactions = transactionModel.getTransactions();
@@ -209,8 +229,10 @@ public class ReportView implements IView {
         return lineChart;
     }
 
-
-
+    /**
+     * Creates comparison chart
+     * @return Border pane comparison chart
+     */
     private BorderPane createExpenseComparisonChart() {
         ComboBox<Month> month1ComboBox = new ComboBox<>();
         ComboBox<Month> month2ComboBox = new ComboBox<>();
@@ -244,6 +266,11 @@ public class ReportView implements IView {
         return chartContainer;
     }
 
+    /**
+     * Update function for comparison chart
+     * @param chartContainer Container of comparison chart
+     * @param transactions Transactions to calculate data from
+     */
     private void updateExpenseComparisonChart(BorderPane chartContainer, List<Transaction> transactions) {
         ComboBox<Month> month1ComboBox = (ComboBox<Month>) ((HBox) chartContainer.getTop()).getChildren().get(1);
         ComboBox<Month> month2ComboBox = (ComboBox<Month>) ((HBox) chartContainer.getTop()).getChildren().get(2);
@@ -306,6 +333,12 @@ public class ReportView implements IView {
         chartContainer.setCenter(stackedBarChart);
     }
 
+    /**
+     * Helper function that calculates category expenses
+     * @param transactions transactions to calculate from
+     * @param category Category to calculate to
+     * @return
+     */
     private double calculateCategoryExpense(List<Transaction> transactions, String category) {
         double totalExpense = 0.0;
 

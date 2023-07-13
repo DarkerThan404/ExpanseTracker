@@ -26,7 +26,10 @@ public class DataStorageManager {
         calculateCurrentForCurrentMonth();
     }
 
-
+    /**
+     * Getter for category model
+     * @return
+     */
     public CategoryModel getCategoryModel(){
         if(categories == null){
             try {
@@ -39,6 +42,10 @@ public class DataStorageManager {
         return categories;
     }
 
+    /**
+     * Getter for transaction model
+     * @return
+     */
     public TransactionModel getTransactionModel(){
         if(transactions == null){
             try {
@@ -51,6 +58,10 @@ public class DataStorageManager {
         return transactions;
     }
 
+    /**
+     * Adds category to a file
+     * @param category instance to add
+     */
     public void addCategoryToFile(Category category) {
 
         // Append the new category's data to the categories file
@@ -65,6 +76,10 @@ public class DataStorageManager {
         }
     }
 
+    /**
+     * Adds transaction to a file
+     * @param transaction instance to add
+     */
     public void addTransactionToFile(Transaction transaction) {
         // Append the new category's data to the categories file
         try {
@@ -78,6 +93,10 @@ public class DataStorageManager {
         }
     }
 
+    /**
+     * Deletes category from a file
+     * @param category instance to delete
+     */
     public void deleteCategory(Category category) {
         // Remove the category from the category model
         categories.remove(category);
@@ -86,6 +105,9 @@ public class DataStorageManager {
         updateCategoryFile();
     }
 
+    /**
+     * Updates category file when categories are modified
+     */
     public void updateCategoryFile() {
         try {
             saveCategoriesToFile(getCategoryModel().getCategories());
@@ -95,6 +117,11 @@ public class DataStorageManager {
         }
     }
 
+    /**
+     * Saves categories to a file
+     * @param categories
+     * @throws IOException
+     */
     private void saveCategoriesToFile(List<Category> categories) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(CATEGORY_FILE_PATH))) {
             for (Category category : categories) {
@@ -105,6 +132,11 @@ public class DataStorageManager {
         }
     }
 
+    /**
+     * Loads categories from file
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     private void loadCategoriesFromFile() throws IOException, URISyntaxException {
         categories = new CategoryModel(this);
 
@@ -119,6 +151,11 @@ public class DataStorageManager {
         categories.setNextID(highestID + 1);
     }
 
+    /**
+     * Loads transactions from file
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     private void loadTransactionsFromFile() throws IOException, URISyntaxException {
         transactions = new TransactionModel(this);
         int highestID = 0;
@@ -131,6 +168,9 @@ public class DataStorageManager {
         transactions.setNextID(highestID + 1);
     }
 
+    /**
+     * Loads data from data files
+     */
     public void loadDataFromFiles() {
         try {
             loadCategoriesFromFile();
@@ -140,18 +180,29 @@ public class DataStorageManager {
         }
     }
 
+    /**
+     * Makes data file path
+     * @param fileName file name
+     * @return full path to data file
+     */
     private String getDataFilePath(String fileName) {
         String workingDirectory = System.getProperty("user.dir");
         return workingDirectory + File.separator + fileName;
     }
 
+    /**
+     * Resets values of current for categories
+     */
     public void resetCurrentValues() {
         for (Category category : categories.getCategories()) {
             category.setCurrent(0.0);
         }
     }
 
-
+    /**
+     * Function that calculate current values for current month.
+     * Used in overview
+     */
     public void calculateCurrentForCurrentMonth() {
 
         resetCurrentValues();

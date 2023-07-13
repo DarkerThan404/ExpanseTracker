@@ -40,6 +40,10 @@ public class TransactionsController implements IController {
         return view.getNode();
     }
 
+    /**
+     * Function that handles add transaction operation
+     * @param event
+     */
     public void handleAddTransactionButton(ActionEvent event) {
         Dialog<Transaction> dialog = createTransactionDialog();
         Optional<Transaction> result = dialog.showAndWait();
@@ -50,6 +54,10 @@ public class TransactionsController implements IController {
         storageManager.calculateCurrentForCurrentMonth();
     }
 
+    /**
+     * Helper function to create dialog for creation of transactions
+     * @return Dialog that is responsible for creating transaction
+     */
     private Dialog<Transaction> createTransactionDialog(){
 
         Dialog<Transaction> dialog = new Dialog<>();

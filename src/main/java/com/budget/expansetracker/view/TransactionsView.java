@@ -13,7 +13,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -36,8 +35,6 @@ public class TransactionsView implements IView{
     private HBox buttonContainer;
     private HBox confirmCancelContainer;
 
-    private boolean deleteMode = false;
-
     public TransactionsView(TransactionsController controller, CategoryModel categoryModel, TransactionModel transactionModel){
         this.controller = controller;
         this.categoryModel = categoryModel;
@@ -49,6 +46,9 @@ public class TransactionsView implements IView{
         return root;
     }
 
+    /**
+     * Creates transactions content view
+     */
     private void createView(){
         root = new VBox();
 
@@ -59,6 +59,9 @@ public class TransactionsView implements IView{
         root.getChildren().addAll(buttonContainer, transactionTableView, confirmCancelContainer);
     }
 
+    /**
+     * Helper function that creates table for transaction view
+     */
     private void createTableView(){
         transactionTableView = new TableView<>();
 
@@ -97,6 +100,10 @@ public class TransactionsView implements IView{
         transactionTableView.getColumns().add(descriptionColumn);
         transactionTableView.setItems(transactionModel.getTransactions());
     }
+
+    /**
+     * Creates buttons for transactions view
+     */
     private void createButtons(){
         buttonContainer = new HBox(10);
 
@@ -120,6 +127,9 @@ public class TransactionsView implements IView{
         confirmCancelContainer.getChildren().addAll(confirmDeleteButton, cancelButton);
     }
 
+    /**
+     * Creates helper UI components to support deleting transactions
+     */
     private void initializeDeleteMode(){
         TableColumn<Transaction, Boolean> selectColumn = new TableColumn<>("Select");
         selectColumn.setCellValueFactory(param -> {
@@ -155,7 +165,7 @@ public class TransactionsView implements IView{
             List<Transaction> selectedTransactions = transactionModel.getTransactions().stream()
                     .filter(Transaction::isSelected)
                     .collect(Collectors.toList());
-            transactionModel.removeTranasactions(selectedTransactions);
+            transactionModel.removeTransactions(selectedTransactions);
 
             // Clear selection
             for (Transaction transaction : transactionTableView.getItems()) {

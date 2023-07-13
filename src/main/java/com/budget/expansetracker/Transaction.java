@@ -97,6 +97,10 @@ public class Transaction {
         this.description = description;
     }
 
+    /**
+     * Helper function to convert transaction object to a csv representation
+     * @return
+     */
     public String toCsv() {
         StringJoiner sj = new StringJoiner(",");
         sj.add(Integer.toString(ID));
@@ -109,6 +113,12 @@ public class Transaction {
         return sj.toString();
     }
 
+    /**
+     * Convert csv representation to transaction object
+     * @param csv instance string in csv representation
+     * @param categories category model
+     * @return transaction object
+     */
     public static Transaction fromCsv(String csv, CategoryModel categories) {
         String[] values = csv.split(",");
         int id = parseInteger(values[0]);
@@ -127,6 +137,11 @@ public class Transaction {
         return new Transaction(id, name, date, amount, type, category, description);
     }
 
+    /**
+     * Helper function that parses integer
+     * @param value to parse
+     * @return parsed value
+     */
     private static int parseInteger(String value) {
         try {
             return Integer.parseInt(value);
@@ -135,6 +150,11 @@ public class Transaction {
         }
     }
 
+    /**
+     * Validation function for name
+     * @param value to validate
+     * @return valid string
+     */
     private static String validateName(String value) {
         if (value.isEmpty()) {
             throw new IllegalArgumentException("Invalid name: " + value);
@@ -142,6 +162,11 @@ public class Transaction {
         return value;
     }
 
+    /**
+     * Parses string to local date object
+     * @param value to parse
+     * @return parsed local date object
+     */
     private static LocalDate parseDate(String value) {
         try {
             return LocalDate.parse(value);
@@ -150,6 +175,11 @@ public class Transaction {
         }
     }
 
+    /**
+     * Parses and validates value to positive double
+     * @param value to parse
+     * @return parsed value
+     */
     private static double parsePositiveDouble(String value) {
         try {
             double amount = Double.parseDouble(value);
@@ -162,6 +192,11 @@ public class Transaction {
         }
     }
 
+    /**
+     * Parses transaction type from string
+     * @param value to parse
+     * @return type
+     */
     private static TransactionType parseTransactionType(String value) {
         try {
             return TransactionType.valueOf(value);

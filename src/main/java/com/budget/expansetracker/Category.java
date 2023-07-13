@@ -49,10 +49,19 @@ public class Category {
         return name;
     }
 
+    /**
+     * Convert function that return category object into csv representation
+     * @return
+     */
     public String toCsv() {
         return ID + "," + name + "," + current + "," + goal;
     }
 
+    /**
+     * Static function to convert string to category object
+     * @param csv category object in csv form
+     * @return
+     */
     public static Category fromCsv(String csv) {
         String[] fields = csv.split(",");
         int ID = parseInteger(fields[0]);
@@ -62,6 +71,11 @@ public class Category {
         return new Category(ID, name, current, goal);
     }
 
+    /**
+     * Helper function for parsing integer
+     * @param value
+     * @return
+     */
     private static int parseInteger(String value) {
         try {
             return Integer.parseInt(value);
@@ -70,6 +84,11 @@ public class Category {
         }
     }
 
+    /**
+     * Validation function for name
+     * @param value
+     * @return
+     */
     private static String validateName(String value) {
         if (value.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be empty.");
@@ -77,6 +96,11 @@ public class Category {
         return value;
     }
 
+    /**
+     * Function that parses string to double and checks if its positive
+     * @param value instance to convert
+     * @return converted value
+     */
     private static double parsePositiveDouble(String value) {
         try {
             double number = Double.parseDouble(value);

@@ -29,6 +29,10 @@ public class BudgetTrackerApplication extends Application {
     private ToggleButton transactionsButton;
     private ToggleButton reportButton;
 
+    /**
+     * Entry function of application
+     * @param stage
+     */
     @Override
     public void start(Stage stage) {
 
@@ -84,10 +88,18 @@ public class BudgetTrackerApplication extends Application {
         launch();
     }
 
+    /**
+     * Sets content for root
+     * @param content instance to set
+     */
     private void setContent(Node content){
         root.setCenter(content);
     }
 
+    /**
+     * Creates menu for main application
+     * @return menu
+     */
     private VBox createMenu(){
         VBox menu = new VBox();
         menu.getChildren().addAll(overviewButton, transactionsButton, reportButton);
