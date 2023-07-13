@@ -93,11 +93,11 @@ public class OverviewController implements IController {
         return view.getNode();
     }
 
-    public List<Transaction> getRecentTransactions(int recentTransactionCount) {
+    public List<Transaction> getRecentTransactions(int numRecentTransactions) {
         List<Transaction> allTransactions = transactions.getTransactions();
         Collections.sort(allTransactions, (t1,t2) -> t2.getDate().compareTo(t1.getDate()));
         List<Transaction> recentTransactions = new ArrayList<>();
-        int numRecentTransactions = 5;
+
         for (int i = 0; i < numRecentTransactions && i < allTransactions.size(); i++){
             recentTransactions.add(allTransactions.get(i));
         }

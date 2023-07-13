@@ -38,7 +38,7 @@ public class OverviewView implements IView {
 
     private ListView<Category> categoryListView;
 
-    private final int recentTransactionCount = 5;
+    private final int recentTransactionCount = 10;
 
     public OverviewView(OverviewController controller, CategoryModel categoryModel, TransactionModel transactionModel) {
         this.controller = controller;
@@ -110,6 +110,12 @@ public class OverviewView implements IView {
 
         categoriesBox.getChildren().add(addCategoryButton);
         categoriesBox.getChildren().add(categoryListView);
+
+        Label remainder = new Label("Categories current values reset to zero at the start of the month.");
+
+        remainder.getStyleClass().add("remainder");
+
+        categoriesBox.getChildren().add(remainder);
 
         // Create and configure the recent transactions component
         transactionsBox = new VBox();
@@ -209,11 +215,7 @@ public class OverviewView implements IView {
                 if (empty || transaction == null) {
                     setText(null);
                 } else {
-                    Category transactionCategory = transaction.getCategory();
-                    if(transactionCategory == null){
-                        transactionCategory = categoryModel.getDefaultCategory();
-                    }
-                    setText(transaction.getName() + " - " + transaction.getAmount() + ", " + transaction.getDate() + ", " +  categoryModel.getCategoryByID(transactionCategory.getID()) );
+                    setText( transaction.getDate() + " - " + transaction.getName() + " - " + transaction.getAmount());
                 }
             }
         });

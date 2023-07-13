@@ -77,3 +77,8 @@
 .progress-bar.goal-met {
     -fx-accent: gold; /* Customize the color for goal met */
 }
+
+.remainder {
+
+   -fx-font-size: 11px;
+}
