@@ -8,8 +8,8 @@ import javafx.collections.ObservableList;
 import java.util.List;
 
 public class TransactionModel {
-    private ObservableList<Transaction> transactions;
-    private DataStorageManager dataStorageManager;
+    private final ObservableList<Transaction> transactions;
+    private final DataStorageManager dataStorageManager;
 
     private int nextID;
 
@@ -60,6 +60,9 @@ public class TransactionModel {
         dataStorageManager.addTransactionToFile(transaction);
     }
 
+    public void removeTransactions(List<Transaction> selectedTransactions) {
+        transactions.removeAll(selectedTransactions);
+    }
     /**
      * Getter for transactions
      * @return

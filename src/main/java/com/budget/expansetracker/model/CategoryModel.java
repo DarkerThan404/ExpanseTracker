@@ -6,10 +6,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class CategoryModel {
-    private ObservableList<Category> categories;
+    private final ObservableList<Category> categories;
 
-    private Category defaultCategory;
-    private DataStorageManager dataStorageManager;
+    private final Category defaultCategory;
+    private final DataStorageManager dataStorageManager;
 
     private int nextID;
 
@@ -32,13 +32,13 @@ public class CategoryModel {
     }
 
     /**
-     * Called once at start of the application to set nextID to highest possible number
+     * Called once at start of the application to set nextID to the highest possible number
      * @param nextID
      */
     public void setNextID(int nextID){ this.nextID = nextID;}
 
     /**
-     * Removes category from the lsit
+     * Removes category from the list
      * @param category instance to remove
      */
     public void remove(Category category){

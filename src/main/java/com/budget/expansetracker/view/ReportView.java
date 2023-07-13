@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 
 public class ReportView implements IView {
 
-    private ReportController reportController;
-    private CategoryModel categoryModel;
-    private TransactionModel transactionModel;
+    private final ReportController reportController;
+    private final CategoryModel categoryModel;
+    private final TransactionModel transactionModel;
 
     private HBox root;
 
@@ -223,7 +223,8 @@ public class ReportView implements IView {
         }
 
         // Add the series to the line chart
-        lineChart.getData().addAll(expenseSeries, incomeSeries);
+        lineChart.getData().add(expenseSeries);
+        lineChart.getData().add(incomeSeries);
 
         // Add the line chart to the root container
         return lineChart;

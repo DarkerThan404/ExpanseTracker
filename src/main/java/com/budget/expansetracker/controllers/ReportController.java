@@ -8,12 +8,12 @@ import javafx.scene.Node;
 
 public class ReportController implements IController {
 
-    private ReportView view;
+    private final ReportView view;
 
-    private DataStorageManager storageManager;
+    private final DataStorageManager storageManager;
 
-    private CategoryModel categoryModel;
-    private TransactionModel transactionModel;
+    private final CategoryModel categoryModel;
+    private final TransactionModel transactionModel;
 
     public ReportController(DataStorageManager storageManager){
         this.storageManager = storageManager;

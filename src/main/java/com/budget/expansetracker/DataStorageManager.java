@@ -23,7 +23,6 @@ public class DataStorageManager {
 
     public DataStorageManager(){
         loadDataFromFiles();
-        calculateCurrentForCurrentMonth();
     }
 
     /**
@@ -137,7 +136,7 @@ public class DataStorageManager {
      * @param selectedTransactions
      */
     public void removeTransactions(List<Transaction> selectedTransactions) {
-        transactions.getTransactions().removeAll(selectedTransactions);
+        transactions.removeTransactions(selectedTransactions);
         saveTransactionsToFile();
     }
 
@@ -245,7 +244,7 @@ public class DataStorageManager {
                 int transactionMonth = transactionDate.getMonthValue();
                 int transactionYear = transactionDate.getYear();
 
-                if (transactionMonth == currentMonth && transactionYear == currentYear && transaction.getCategory() == category) {
+                if (transactionMonth == currentMonth && transactionYear == currentYear && transaction.getCategory() == category && transaction.getType() == Transaction.TransactionType.EXPENSE) {
                     current += transaction.getAmount();
                 }
             }

@@ -17,8 +17,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class TransactionsView implements IView{
 
@@ -174,9 +172,7 @@ public class TransactionsView implements IView{
             addTransactionButton.setVisible(true);
             confirmDeleteButton.setVisible(false);
             cancelButton.setVisible(false);
-            if(transactionTableView.getColumns().contains(selectColumn)){
-                transactionTableView.getColumns().remove(selectColumn);
-            }
+            transactionTableView.getColumns().remove(selectColumn);
         });
 
         cancelButton.setOnAction(event -> {
@@ -190,9 +186,7 @@ public class TransactionsView implements IView{
             addTransactionButton.setVisible(true);
             confirmDeleteButton.setVisible(false);
             cancelButton.setVisible(false);
-            if(transactionTableView.getColumns().contains(selectColumn)){
-                transactionTableView.getColumns().remove(selectColumn);
-            }
+            transactionTableView.getColumns().remove(selectColumn);
         });
     }
 }

@@ -13,20 +13,19 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 public class OverviewController implements IController {
 
-    private OverviewView view;
+    private final OverviewView view;
 
     private static int nextID;
 
-    private DataStorageManager storageManager;
+    private final DataStorageManager storageManager;
 
-    private CategoryModel categories;
-    private TransactionModel transactions;
+    private final CategoryModel categories;
+    private final TransactionModel transactions;
 
     public OverviewController(DataStorageManager storageManager){
         this.storageManager = storageManager;
@@ -43,9 +42,7 @@ public class OverviewController implements IController {
         Dialog<Category> dialog = createAddCategoryDialog();
         Optional<Category> result = dialog.showAndWait();
 
-        result.ifPresent(category -> {
-            categories.add(category);
-        });
+        result.ifPresent(categories::add);
     }
 
     /**
@@ -120,7 +117,7 @@ public class OverviewController implements IController {
      */
     public List<Transaction> getRecentTransactions(int numRecentTransactions) {
         List<Transaction> allTransactions = transactions.getTransactions();
-        Collections.sort(allTransactions, (t1,t2) -> t2.getDate().compareTo(t1.getDate()));
+        allTransactions.sort((t1, t2) -> t2.getDate().compareTo(t1.getDate()));
         List<Transaction> recentTransactions = new ArrayList<>();
 
         for (int i = 0; i < numRecentTransactions && i < allTransactions.size(); i++){
@@ -238,5 +235,12 @@ public class OverviewController implements IController {
             // Removes the category box from the UI and data structure
             storageManager.deleteCategory(category);
         }
+    }
+
+    /**
+     * Calculates current for current month
+     */
+    public void countCurrent() {
+        storageManager.calculateCurrentForCurrentMonth();
     }
 }

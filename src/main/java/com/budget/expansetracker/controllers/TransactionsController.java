@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
 
 public class TransactionsController implements IController {
 
-    private TransactionsView view;
+    private final TransactionsView view;
 
-    private DataStorageManager storageManager;
+    private final DataStorageManager storageManager;
 
-    private CategoryModel categories;
-    private TransactionModel transactions;
+    private final CategoryModel categories;
+    private final TransactionModel transactions;
 
     private int newID;
 
@@ -50,10 +50,7 @@ public class TransactionsController implements IController {
         Dialog<Transaction> dialog = createTransactionDialog();
         Optional<Transaction> result = dialog.showAndWait();
 
-        result.ifPresent(transaction -> {
-            transactions.add(transaction);
-        });
-        storageManager.calculateCurrentForCurrentMonth();
+        result.ifPresent(transactions::add);
     }
 
     /**

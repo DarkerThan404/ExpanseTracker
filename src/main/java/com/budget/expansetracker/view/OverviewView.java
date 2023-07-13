@@ -18,7 +18,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 import java.util.List;
 
@@ -32,13 +31,11 @@ public class OverviewView implements IView {
     private VBox transactionsBox;
 
     private Button addCategoryButton;
-    private OverviewController controller;
-    private CategoryModel categoryModel;
-    private TransactionModel transactionModel;
+    private final OverviewController controller;
+    private final CategoryModel categoryModel;
+    private final TransactionModel transactionModel;
 
     private ListView<Category> categoryListView;
-
-    private final int recentTransactionCount = 10;
 
     public OverviewView(OverviewController controller, CategoryModel categoryModel, TransactionModel transactionModel) {
         this.controller = controller;
@@ -106,6 +103,8 @@ public class OverviewView implements IView {
      * Creates category box
      */
     private void createCategoriesComponent() {
+
+        controller.countCurrent();
         categoryListView = new ListView<>();
         categoryListView.setItems(categoryModel.getCategories());
         categoryListView.setCellFactory(param -> new ListCell<>() {
@@ -144,6 +143,7 @@ public class OverviewView implements IView {
         transactionsBox.setSpacing(5);
 
         Label transactionsLabel = new Label("Recent Transactions:");
+        int recentTransactionCount = 10;
         List<Transaction> recentTransactions = controller.getRecentTransactions(recentTransactionCount);
         ListView<Transaction> transactionsListView = createTransactionView(recentTransactions);
 
