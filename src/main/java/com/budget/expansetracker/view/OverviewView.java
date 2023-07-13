@@ -51,12 +51,29 @@ public class OverviewView implements IView {
         return root;
     }
 
+    /**
+     * Function that creates content view
+     */
     private void createView() {
         root = new BorderPane();
         root.setPadding(new Insets(10));
 
         transactionModel.calculateInitialBalance();
-        // Create and configure the balance component
+        HBox balanceBox = createBalanceComponent();
+        createCategoriesComponent();
+        createTransactionsComponent();
+
+        // Add the components to the root BorderPane
+        root.setTop(balanceBox);
+        root.setLeft(categoriesBox);
+        root.setRight(transactionsBox);
+    }
+
+    /**
+     * Function that creates balance box
+     * @return balance box
+     */
+    private HBox createBalanceComponent() {
         balanceLabel = new Label("Balance:");
         balanceLabel.getStyleClass().add("balance-label");
 
@@ -82,16 +99,21 @@ public class OverviewView implements IView {
         HBox balanceBox = new HBox(balanceLabel);
         balanceBox.setAlignment(Pos.CENTER);
         balanceBox.prefHeightProperty().bind(root.heightProperty().multiply(0.2));
+        return balanceBox;
+    }
 
-        //categories = FXCollections.observableArrayList();
+    /**
+     * Creates category box
+     */
+    private void createCategoriesComponent() {
         categoryListView = new ListView<>();
         categoryListView.setItems(categoryModel.getCategories());
-        categoryListView.setCellFactory(param -> new ListCell<>(){
+        categoryListView.setCellFactory(param -> new ListCell<>() {
             @Override
-            protected void updateItem(Category category, boolean empty){
+            protected void updateItem(Category category, boolean empty) {
                 super.updateItem(category, empty);
 
-                if( empty || category == null){
+                if (empty || category == null) {
                     setText(null);
                     setGraphic(null);
                 } else {
@@ -101,23 +123,23 @@ public class OverviewView implements IView {
             }
         });
 
-        // Create and configure the categories component
         categoriesBox = new VBox();
         categoriesBox.setSpacing(5);
 
         addCategoryButton = new Button("Add Category");
         addCategoryButton.setOnAction(controller::handleAddCategoryButton);
 
-        categoriesBox.getChildren().add(addCategoryButton);
-        categoriesBox.getChildren().add(categoryListView);
-
         Label remainder = new Label("Categories current values reset to zero at the start of the month.");
-
         remainder.getStyleClass().add("remainder");
 
-        categoriesBox.getChildren().add(remainder);
+        categoriesBox.getChildren().addAll(addCategoryButton, categoryListView, remainder);
+        categoriesBox.setPrefWidth(320);
+    }
 
-        // Create and configure the recent transactions component
+    /**
+     * Creates recent transactions box
+     */
+    private void createTransactionsComponent() {
         transactionsBox = new VBox();
         transactionsBox.setSpacing(5);
 
@@ -125,20 +147,15 @@ public class OverviewView implements IView {
         List<Transaction> recentTransactions = controller.getRecentTransactions(recentTransactionCount);
         ListView<Transaction> transactionsListView = createTransactionView(recentTransactions);
 
-        double desiredWidth = 320;
-
-        categoriesBox.setPrefWidth(desiredWidth);
-        transactionsBox.setPrefWidth(desiredWidth);
-
-
-        transactionsBox.getChildren().add(transactionsLabel);
-        transactionsBox.getChildren().add(transactionsListView);
-        // Add the components to the root VBox
-        root.setTop(balanceBox);
-        root.setLeft(categoriesBox);
-        root.setRight(transactionsBox);
+        transactionsBox.getChildren().addAll(transactionsLabel, transactionsListView);
+        transactionsBox.setPrefWidth(320);
     }
 
+    /**
+     * Creates category box that is then rendered in category box in view
+     * @param category Object that is view created around
+     * @return Category box
+     */
     private HBox createCategoryBox(Category category) {
         HBox categoryBox = new HBox();
         categoryBox.setSpacing(5);
@@ -192,6 +209,10 @@ public class OverviewView implements IView {
         return categoryBox;
     }
 
+    /**
+     * Helper function that update category list
+     * @param category to update
+     */
     public void updateCategoryBoxInList(Category category) {
         ObservableList<Category> categories = categoryModel.getCategories();
         int index = categories.indexOf(category);
@@ -200,8 +221,11 @@ public class OverviewView implements IView {
         }
     }
 
-
-
+    /**
+     * Function that creates recent transaction view.
+     * @param recentTransactions transaction
+     * @return
+     */
     private ListView<Transaction> createTransactionView(List<Transaction> recentTransactions){
 
         ListView<Transaction> transactionsListView = new ListView<>();
