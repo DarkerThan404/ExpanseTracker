@@ -5,4 +5,5 @@ module com.budget.expansetracker {
 
     opens com.budget.expansetracker to javafx.fxml;
     exports com.budget.expansetracker;
+    exports com.budget.expansetracker.model;
 }
