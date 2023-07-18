@@ -87,8 +87,32 @@ public class TransactionsView implements IView{
         transactionTableView.setEditable(true);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
+        nameColumn.setPrefWidth(80);
+        dateColumn.setPrefWidth(70);
+        amountColumn.setPrefWidth(70);
+        typeColumn.setPrefWidth(60);
         categoryColumn.setPrefWidth(120);
-        descriptionColumn.setPrefWidth(200);
+        descriptionColumn.setPrefWidth(180);
+
+        root.widthProperty().addListener((obs,oldWidth,newWidth)->{
+            double availableWidth = newWidth.doubleValue() - 100;
+
+            double totalPreferredWidth = nameColumn.getPrefWidth() + dateColumn.getPrefWidth() + amountColumn.getPrefWidth() + typeColumn.getPrefWidth() + categoryColumn.getPrefWidth() + descriptionColumn.getPrefWidth();
+            double nameWeight = nameColumn.getPrefWidth() / totalPreferredWidth;
+            double dateWeight = dateColumn.getPrefWidth() / totalPreferredWidth;
+            double amountWeight = amountColumn.getPrefWidth() / totalPreferredWidth;
+            double typeWeight = typeColumn.getPrefWidth() / totalPreferredWidth;
+            double categoryWeight = categoryColumn.getPrefWidth() / totalPreferredWidth;
+            double descriptionWeight = descriptionColumn.getPrefWidth() / totalPreferredWidth;
+
+            nameColumn.setPrefWidth(availableWidth * nameWeight);
+            dateColumn.setPrefWidth(availableWidth * dateWeight);
+            amountColumn.setPrefWidth(availableWidth * amountWeight);
+            typeColumn.setPrefWidth(availableWidth * typeWeight);
+            categoryColumn.setPrefWidth(availableWidth * categoryWeight);
+            descriptionColumn.setPrefWidth(availableWidth * descriptionWeight);
+
+        });
 
         transactionTableView.getColumns().add(nameColumn);
         transactionTableView.getColumns().add(dateColumn);
