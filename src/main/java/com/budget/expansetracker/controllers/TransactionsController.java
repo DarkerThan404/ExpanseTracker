@@ -181,4 +181,26 @@ public class TransactionsController implements IController {
 
         storageManager.removeTransactions(selectedTransactions);
     }
+
+    public void handleEditTransactionButton(Transaction transaction) {
+        Dialog<Transaction> dialog = createEditTransactionDialog(transaction);
+        Optional<Transaction> result = dialog.showAndWait();
+        if(result.isPresent()){
+            Transaction editedTransaction = result.get();
+
+            // Update the current and goal properties with the new values
+            transaction.setName(editedTransaction.getName());
+            transaction.setCategory(editedTransaction.getCategory());
+            transaction.setAmount(editedTransaction.getAmount());
+
+            //view.updateCategoryBoxInList(category);
+
+            //storageManager.updateTransactionFile();
+        }
+    }
+
+    private Dialog<Transaction> createEditTransactionDialog(Transaction transaction) {
+
+        return null;
+    }
 }

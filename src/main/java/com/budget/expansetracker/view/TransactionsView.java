@@ -58,8 +58,6 @@ public class TransactionsView implements IView{
         VBox.setVgrow(transactionTableView, Priority.ALWAYS);
 
         root.getChildren().addAll(buttonContainer, transactionTableView, confirmCancelContainer);
-
-
     }
 
     /**
@@ -74,6 +72,7 @@ public class TransactionsView implements IView{
         TableColumn<Transaction, Transaction.TransactionType> typeColumn = new TableColumn<>("Type");
         TableColumn<Transaction, Category> categoryColumn = new TableColumn<>("Category");
         TableColumn<Transaction, String> descriptionColumn = new TableColumn<>("Description");
+        TableColumn<Transaction, Void> editButtonColumn = new TableColumn<>("Edit");
 
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -89,6 +88,35 @@ public class TransactionsView implements IView{
             }
         });
 
+        // Create the "Edit" button column
+        editButtonColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button editButton = new Button("Edit");
+
+            {
+                editButton.setOnAction(event -> {
+                    Transaction transaction = getTableView().getItems().get(getIndex());
+                    if (transaction != null) {
+                        // Show the pop-up dialog and handle the editing logic here
+                        // You can use a custom dialog or JavaFX Dialog class to implement this
+                        // Update the TableView and underlying data model if needed
+                        // For simplicity, we just print the current data to the console.
+                        System.out.println("Editing transaction: " + transaction.getName());
+                        controller.handleEditTransactionButton(transaction);
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(editButton);
+                }
+            }
+        });
+
         transactionTableView.setEditable(true);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
@@ -97,10 +125,11 @@ public class TransactionsView implements IView{
         amountColumn.setPrefWidth(70);
         typeColumn.setPrefWidth(60);
         categoryColumn.setPrefWidth(120);
-        descriptionColumn.setPrefWidth(180);
+        descriptionColumn.setPrefWidth(160);
+        editButtonColumn.setPrefWidth(60);
 
         root.widthProperty().addListener((obs,oldWidth,newWidth)->{
-            double availableWidth = newWidth.doubleValue() - 100;
+            double availableWidth = newWidth.doubleValue() - 140;
 
             double totalPreferredWidth = nameColumn.getPrefWidth() + dateColumn.getPrefWidth() + amountColumn.getPrefWidth() + typeColumn.getPrefWidth() + categoryColumn.getPrefWidth() + descriptionColumn.getPrefWidth();
             double nameWeight = nameColumn.getPrefWidth() / totalPreferredWidth;
@@ -116,7 +145,6 @@ public class TransactionsView implements IView{
             typeColumn.setPrefWidth(availableWidth * typeWeight);
             categoryColumn.setPrefWidth(availableWidth * categoryWeight);
             descriptionColumn.setPrefWidth(availableWidth * descriptionWeight);
-
         });
 
         transactionTableView.getColumns().add(nameColumn);
@@ -125,6 +153,7 @@ public class TransactionsView implements IView{
         transactionTableView.getColumns().add(typeColumn);
         transactionTableView.getColumns().add(categoryColumn);
         transactionTableView.getColumns().add(descriptionColumn);
+        transactionTableView.getColumns().add(editButtonColumn);
         transactionTableView.setItems(transactionModel.getTransactions());
         transactionTableView.setPrefHeight(450);
 
@@ -148,7 +177,6 @@ public class TransactionsView implements IView{
 
         confirmDeleteButton = new Button("Confirm Delete");
         cancelButton = new Button("Cancel");
-
 
         confirmDeleteButton.setVisible(false);
         cancelButton.setVisible(false);
