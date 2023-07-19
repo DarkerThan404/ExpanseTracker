@@ -11,7 +11,9 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.time.LocalDate;
@@ -28,6 +30,7 @@ public class TransactionsView implements IView{
     private Button confirmDeleteButton;
     private Button cancelButton;
     private TableView<Transaction> transactionTableView;
+    private AnchorPane wrapper;
     private HBox buttonContainer;
     private HBox confirmCancelContainer;
 
@@ -52,7 +55,11 @@ public class TransactionsView implements IView{
         createButtons();
         initializeDeleteMode();
 
+        VBox.setVgrow(transactionTableView, Priority.ALWAYS);
+
         root.getChildren().addAll(buttonContainer, transactionTableView, confirmCancelContainer);
+
+
     }
 
     /**
@@ -119,6 +126,7 @@ public class TransactionsView implements IView{
         transactionTableView.getColumns().add(categoryColumn);
         transactionTableView.getColumns().add(descriptionColumn);
         transactionTableView.setItems(transactionModel.getTransactions());
+        transactionTableView.setPrefHeight(450);
 
     }
 
