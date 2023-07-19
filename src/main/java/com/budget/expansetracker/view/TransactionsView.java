@@ -8,9 +8,7 @@ import com.budget.expansetracker.model.TransactionModel;
 import javafx.beans.property.*;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -121,6 +119,7 @@ public class TransactionsView implements IView{
         transactionTableView.getColumns().add(categoryColumn);
         transactionTableView.getColumns().add(descriptionColumn);
         transactionTableView.setItems(transactionModel.getTransactions());
+
     }
 
     /**
