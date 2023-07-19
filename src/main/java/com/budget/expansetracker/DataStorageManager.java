@@ -2,6 +2,7 @@ package com.budget.expansetracker;
 
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
+import javafx.collections.ObservableList;
 
 import java.io.BufferedWriter;
 import java.io.File;

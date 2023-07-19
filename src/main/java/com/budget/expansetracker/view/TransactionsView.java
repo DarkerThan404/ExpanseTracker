@@ -96,12 +96,8 @@ public class TransactionsView implements IView{
                 editButton.setOnAction(event -> {
                     Transaction transaction = getTableView().getItems().get(getIndex());
                     if (transaction != null) {
-                        // Show the pop-up dialog and handle the editing logic here
-                        // You can use a custom dialog or JavaFX Dialog class to implement this
-                        // Update the TableView and underlying data model if needed
-                        // For simplicity, we just print the current data to the console.
-                        System.out.println("Editing transaction: " + transaction.getName());
                         controller.handleEditTransactionButton(transaction);
+                        transactionTableView.refresh();
                     }
                 });
             }
