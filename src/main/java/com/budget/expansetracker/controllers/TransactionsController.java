@@ -190,8 +190,12 @@ public class TransactionsController implements IController {
 
             // Update the current and goal properties with the new values
             transaction.setName(editedTransaction.getName());
-            transaction.setCategory(editedTransaction.getCategory());
+            transaction.setDate(editedTransaction.getDate());
             transaction.setAmount(editedTransaction.getAmount());
+            transaction.setType(editedTransaction.getType());
+            transaction.setCategory(editedTransaction.getCategory());
+            transaction.setDescription(editedTransaction.getDescription());
+
 
             //view.updateCategoryBoxInList(category);
 
@@ -200,7 +204,117 @@ public class TransactionsController implements IController {
     }
 
     private Dialog<Transaction> createEditTransactionDialog(Transaction transaction) {
+        Dialog<Transaction> dialog = new Dialog<>();
+        dialog.setTitle("Edit Transaction");
+        dialog.setHeaderText("Fill in transaction details");
 
-        return null;
+
+        TextField nameField = new TextField(transaction.getName());
+        DatePicker dateField = new DatePicker(transaction.getDate());
+        TextField amountField = new TextField(String.valueOf(transaction.getAmount()));
+        ComboBox<Transaction.TransactionType> typeComboBox = new ComboBox<>();
+        typeComboBox.getItems().addAll(Transaction.TransactionType.INCOME, Transaction.TransactionType.EXPENSE);
+        typeComboBox.setValue(transaction.getType());
+
+        ComboBox<Category> categoryComboBox = new ComboBox<>();
+
+        // Get the observable list of items from the combo box
+        ObservableList<Category> categoryItems = categoryComboBox.getItems();
+
+        // Add the default category to the beginning of the list
+        categoryItems.add(categories.getDefaultCategory());
+        categoryItems.addAll(categories.getCategories());
+
+        // Set the modified list as the combo box's items
+        categoryComboBox.setItems(categoryItems);
+        categoryComboBox.setValue(transaction.getCategory());
+
+        TextField descriptionField = new TextField(transaction.getDescription());
+
+        Label nameLabelError = new Label();
+        Label dateLabelError = new Label();
+        Label amountLabelError = new Label();
+        Label typeLabelError = new Label();
+        Label categoryLabelError = new Label();
+
+        nameLabelError.setTextFill(Color.RED);
+        dateLabelError.setTextFill(Color.RED);
+        amountLabelError.setTextFill(Color.RED);
+        typeLabelError.setTextFill(Color.RED);
+        categoryLabelError.setTextFill(Color.RED);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        int rowIdx = 0;
+
+        grid.addRow(rowIdx++, new Label("Name:"), nameField);
+        grid.addRow(rowIdx++, nameLabelError);
+
+
+        grid.addRow(rowIdx++, new Label("Date:"), dateField);
+        grid.addRow(rowIdx++, dateLabelError);
+
+        HBox amountTypeBox = new HBox(10);
+        amountTypeBox.getChildren().addAll(new Label("Amount:"), amountField, new Label("Type:"), typeComboBox);
+        grid.addRow(rowIdx++, amountTypeBox);
+
+        grid.addRow(rowIdx++, amountLabelError, typeLabelError);
+
+        grid.addRow(rowIdx++, new Label("Category:"), categoryComboBox);
+        grid.addRow(rowIdx++, categoryLabelError);
+
+        grid.addRow(rowIdx++, new Label("Description:"), descriptionField);
+
+        dialog.getDialogPane().setContent(grid);
+
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
+
+        // Disable the "Add" button by default
+        Button addButton = (Button) dialog.getDialogPane().lookupButton(saveButtonType);
+        addButton.setDisable(true);
+
+        // Add a change listener to enable/disable the "Add" button
+        ChangeListener<Object> fieldsChangeListener = (observable, oldValue, newValue) -> {
+            boolean isNameValid = !nameField.getText().trim().isEmpty();
+            boolean isDateValid = dateField.getValue() != null;
+            boolean isAmountValid = amountField.getText().matches("^\\d*\\.?\\d+$");
+            boolean isTypeValid = typeComboBox.getValue() != null;
+            boolean isCategoryValid = categoryComboBox.getValue() != null;
+
+            addButton.setDisable(!isNameValid || !isDateValid || !isAmountValid || !isTypeValid || !isCategoryValid);
+
+            nameLabelError.setText(isNameValid ? "" : "Name is required");
+            dateLabelError.setText(isDateValid ? "" : "Date is required");
+            amountLabelError.setText(isAmountValid ? "" : "Amount must be a positive number");
+            typeLabelError.setText(isTypeValid ? "" : "Type is required");
+            categoryLabelError.setText(isCategoryValid ? "" : "Category is required");
+        };
+
+        // Register the change listener for all relevant fields
+        nameField.textProperty().addListener(fieldsChangeListener);
+        dateField.valueProperty().addListener(fieldsChangeListener);
+        amountField.textProperty().addListener(fieldsChangeListener);
+        typeComboBox.valueProperty().addListener(fieldsChangeListener);
+        categoryComboBox.valueProperty().addListener(fieldsChangeListener);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                String name = nameField.getText();
+                LocalDate date = dateField.getValue();
+                double amount = Double.parseDouble(amountField.getText());
+                Transaction.TransactionType type = typeComboBox.getValue();
+                Category category = categoryComboBox.getValue();
+                String description = descriptionField.getText();
+
+                return new Transaction(newID++, name, date, amount, type, category, description);
+            }
+            return null;
+        });
+
+        return dialog;
     }
 }
