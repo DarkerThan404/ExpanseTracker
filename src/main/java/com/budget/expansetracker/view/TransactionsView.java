@@ -88,7 +88,6 @@ public class TransactionsView implements IView{
             }
         });
 
-        // Create the "Edit" button column
         editButtonColumn.setCellFactory(param -> new TableCell<>() {
             private final Button editButton = new Button("Edit");
 
@@ -115,6 +114,19 @@ public class TransactionsView implements IView{
 
         transactionTableView.setEditable(true);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        descriptionColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item.trim().equals("null") || item.isEmpty()) {
+                    setText("(No description available)");
+                } else {
+                    // Display the actual description value
+                    setText(item);
+                }
+            }
+        });
 
         nameColumn.setPrefWidth(80);
         dateColumn.setPrefWidth(70);
