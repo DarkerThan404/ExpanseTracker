@@ -211,14 +211,10 @@ public class OverviewView implements IView {
 
     /**
      * Helper function that update category list
-     * @param category to update
+     *
      */
-    public void updateCategoryBoxInList(Category category) {
-        ObservableList<Category> categories = categoryModel.getCategories();
-        int index = categories.indexOf(category);
-        if (index >= 0) {
-            categoryListView.getItems().set(index, category);
-        }
+    public void refreshCategoryList() {
+        categoryListView.refresh();
     }
 
     /**

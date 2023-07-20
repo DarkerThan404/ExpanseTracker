@@ -141,7 +141,7 @@ public class OverviewController implements IController {
             category.setCurrent(editedCategory.getCurrent());
             category.setGoal(editedCategory.getGoal());
 
-            view.updateCategoryBoxInList(category);
+            view.refreshCategoryList();
 
             storageManager.updateCategoryFile();
         }
