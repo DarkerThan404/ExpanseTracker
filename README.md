@@ -5,7 +5,7 @@ The Budget Planner Application is a simple budget tracking tool that allows user
 ## Features
 
 - Add, edit, and delete expense categories.
-- Add, edit, and delete transactions with associated categories.
+- Add, edit, and delete transactions with associated categories. (delete button triggers selection column where you select undesired rows and by confirm deletes them, or you cancel by pressing cancel button)
 - View summary of expenses for each category.
 - Calculate the current expenses for the current month.
 - Store data in CSV files for persistence between sessions.
