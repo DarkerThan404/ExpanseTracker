@@ -195,7 +195,8 @@ public class TransactionsController implements IController {
             transaction.setType(editedTransaction.getType());
             transaction.setCategory(editedTransaction.getCategory());
             transaction.setDescription(editedTransaction.getDescription());
-            //TODO: propagate changes to a file
+
+            storageManager.updateTransactionFile();
         }
     }
 
