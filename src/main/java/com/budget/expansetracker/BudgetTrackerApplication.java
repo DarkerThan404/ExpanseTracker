@@ -75,11 +75,10 @@ public class BudgetTrackerApplication extends Application {
         root.setLeft(createMenu());
 
         root.setCenter(overviewController.getView());
-        // Create the scene with the root layout
+
         Scene scene = new Scene(root, 960, 640);
         scene.getStylesheets().add("/styles.css");
 
-        // Set the scene for the primary stage
         stage.setScene(scene);
         stage.show();
     }

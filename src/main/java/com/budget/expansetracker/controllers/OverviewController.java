@@ -229,10 +229,10 @@ public class OverviewController implements IController {
             // Update the transactions to remove the reference to the deleted category
             for (Transaction transaction : transactions.getTransactions()) {
                 if (transaction.getCategory().equals(category)) {
-                    transaction.setCategory(categories.getDefaultCategory()); // Set category to null or assign a default category
+                    transaction.setCategory(categories.getDefaultCategory());
                 }
             }
-            // Removes the category box from the UI and data structure
+            // Removes the category box from data structure
             storageManager.deleteCategory(category);
         }
     }
