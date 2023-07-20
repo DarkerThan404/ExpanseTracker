@@ -14,10 +14,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 import java.util.List;
 
@@ -132,7 +129,8 @@ public class OverviewView implements IView {
         remainder.getStyleClass().add("remainder");
 
         categoriesBox.getChildren().addAll(addCategoryButton, categoryListView, remainder);
-        categoriesBox.setPrefWidth(320);
+        categoriesBox.getStyleClass().add("categories-box");
+        categoriesBox.setPrefWidth(400);
     }
 
     /**
@@ -148,7 +146,8 @@ public class OverviewView implements IView {
         ListView<Transaction> transactionsListView = createTransactionView(recentTransactions);
 
         transactionsBox.getChildren().addAll(transactionsLabel, transactionsListView);
-        transactionsBox.setPrefWidth(320);
+        transactionsBox.getStyleClass().add("transactions-list");
+        transactionsBox.setPrefWidth(380);
     }
 
     /**

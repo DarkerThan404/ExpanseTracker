@@ -37,7 +37,7 @@
 }
 
 .balance-label {
-    -fx-font-size: 24px;
+    -fx-font-size: 32px;
 }
 
 .balance-positive {
@@ -50,20 +50,6 @@
 
 .balance-zero {
     -fx-text-fill: gray;
-}
-
-/* Adjusting the Width of the Category Box and Recent Transactions List */
-.categories-box {
-    -fx-pref-width: 50%; /* Adjust the width as desired */
-}
-
-.transactions-list {
-    -fx-pref-width: 50%; /* Adjust the width as desired */
-}
-
-// CSS file
-.progress-bar {
-    /* Default style for the progress bar */
 }
 
 .progress-bar.over-limit {
@@ -80,5 +66,5 @@
 
 .remainder {
 
-   -fx-font-size: 11px;
+   -fx-font-size: 12px;
 }
