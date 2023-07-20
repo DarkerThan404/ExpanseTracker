@@ -21,7 +21,7 @@ The Budget Planner Application is a simple budget tracking tool that allows user
 ## Usage
 
 1. Run the `BudgetTrackerApplication.java` class to start the application.
-2. The application will create the necessary data files (`transactions.csv` and `categories.csv`) in the user's home directory under a subdirectory named `BudgetPlanner/data`.
+2. The application will create the necessary data files (`transactions.csv` and `categories.csv`) in the user's home directory under a subdirectory named `BudgetPlanner/data`(or you can copy files prepared for demo in data folder of main application).
 3. Use the GUI to add, edit, and delete categories and transactions as needed.
 4. The application will automatically save changes to the data files.
 
