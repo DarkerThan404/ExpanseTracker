@@ -9,11 +9,14 @@ The Budget Planner Application is a simple budget tracking tool that allows user
 - View summary of expenses for each category.
 - Calculate the current expenses for the current month.
 - Store data in CSV files for persistence between sessions.
+- Visualize proportional expenses as pie chart with customizable periods.
+- Compare expenses across two different months.
+- Visualize monthly trends for both expenses and income with line graphs.
 
 ## Installation
 
 1. Unzip file
-2. Open the project in your preferred Java IDE (e.g., IntelliJ, Eclipse).
+2. Open the project in your Java IDE (e.g., IntelliJ, Eclipse).
 
 ## Usage
 
