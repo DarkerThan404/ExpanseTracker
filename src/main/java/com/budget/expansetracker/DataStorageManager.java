@@ -110,21 +110,19 @@ public class DataStorageManager {
      */
     public void updateCategoryFile() {
         try {
-            saveCategoriesToFile(getCategoryModel().getCategories());
+            saveCategoriesToFile();
         } catch (IOException e) {
-            // Handle the exception, e.g., log an error or show an error message
             e.printStackTrace();
         }
     }
 
     /**
      * Saves categories to a file
-     * @param categories
      * @throws IOException
      */
-    private void saveCategoriesToFile(List<Category> categories) throws IOException {
+    private void saveCategoriesToFile() throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(CATEGORY_FILE_PATH))) {
-            for (Category category : categories) {
+            for (Category category : getCategoryModel().getCategories()) {
                 String line = category.toCsv();
                 writer.write(line);
                 writer.newLine();
@@ -138,13 +136,28 @@ public class DataStorageManager {
      */
     public void removeTransactions(List<Transaction> selectedTransactions) {
         transactions.removeTransactions(selectedTransactions);
-        saveTransactionsToFile();
+        try {
+            saveTransactionsToFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Updates transaction file
+     */
+    public void updateTransactionFile(){
+        try {
+            saveTransactionsToFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Stores transactions to a file
      */
-    private void saveTransactionsToFile() {
+    private void saveTransactionsToFile() throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(TRANSACTION_FILE_PATH))) {
             // Iterate through the transactions in the data model and write them to the file
             for (Transaction transaction : transactions.getTransactions()) {
@@ -152,9 +165,6 @@ public class DataStorageManager {
                 writer.write(line);
                 writer.newLine();
             }
-        } catch (IOException e) {
-            // Handle the exception, e.g., display an error message
-            e.printStackTrace();
         }
     }
 
