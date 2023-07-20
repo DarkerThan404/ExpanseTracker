@@ -82,10 +82,8 @@ public class ReportView implements IView {
         monthComboBox.setOnAction(event -> {
             String selectedMonth = monthComboBox.getValue();
             if (selectedMonth.equals("All")) {
-                // Show all transactions
                 updatePieChartData(pieChart , getCategoryAmounts(selectedMonth));
             } else {
-                // Filter transactions based on selected month
                 updatePieChartData(pieChart, getCategoryAmounts(selectedMonth));
             }
         });
