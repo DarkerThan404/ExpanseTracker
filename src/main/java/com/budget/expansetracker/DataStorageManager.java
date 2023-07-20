@@ -2,7 +2,6 @@ package com.budget.expansetracker;
 
 import com.budget.expansetracker.model.CategoryModel;
 import com.budget.expansetracker.model.TransactionModel;
-import javafx.collections.ObservableList;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,20 +9,58 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
 public class DataStorageManager {
-    private static final String DATA_DIRECTORY = "data";
-    private static final String TRANSACTION_FILE_PATH = DATA_DIRECTORY + File.separator + "transactions.csv";
-    private static final String CATEGORY_FILE_PATH = DATA_DIRECTORY + File.separator + "categories.csv";
+    private static final String DATA_DIRECTORY = "BudgetPlanner";
+    private static final String TRANSACTION_FILE_NAME = "transactions.csv";
+    private static final String CATEGORY_FILE_NAME = "categories.csv";
+
+    private String TRANSACTION_FILE_PATH;
+    private String CATEGORY_FILE_PATH;
 
     private CategoryModel categories;
     private TransactionModel transactions;
 
     public DataStorageManager(){
-        loadDataFromFiles();
+        try {
+            String dataDirectoryPath = createSubdirectory();
+            TRANSACTION_FILE_PATH = dataDirectoryPath + File.separator + TRANSACTION_FILE_NAME;
+            CATEGORY_FILE_PATH = dataDirectoryPath + File.separator + CATEGORY_FILE_NAME;
+            loadDataFromFiles();
+        } catch (IOException e) {
+            System.out.println("Error creating subdirectory: " + e.getMessage());
+        }
+    }
+
+
+    /**
+     * Creates home directory
+     * @return home directory
+     */
+    private String getHomeDirectory() {
+        return System.getProperty("user.home");
+    }
+
+    /**
+     * Function to create subdirectory in home directory
+     * @return directory path
+     */
+    private String createSubdirectory() throws IOException {
+        String homeDirectory = getHomeDirectory();
+        String subdirectoryPath = homeDirectory + File.separator + DATA_DIRECTORY + File.separator + "data";
+
+        File subdirectory = new File(subdirectoryPath);
+        if (!subdirectory.exists()) {
+            boolean success = subdirectory.mkdirs();
+            if (!success) {
+                throw new IOException("Failed to create the subdirectory.");
+            }
+        }
+        return subdirectoryPath;
     }
 
     /**
@@ -63,7 +100,6 @@ public class DataStorageManager {
      * @param category instance to add
      */
     public void addCategoryToFile(Category category) {
-
         // Append the new category's data to the categories file
         try {
             FileWriter fileWriter = new FileWriter(CATEGORY_FILE_PATH, true); // Open file in append mode
@@ -71,7 +107,6 @@ public class DataStorageManager {
             fileWriter.write(categoryData + "\n"); // Write the data to the file followed by a new line
             fileWriter.close(); // Close the file
         } catch (IOException e) {
-            // Handle any exceptions that occur during file writing
             System.out.println("Error writing data: " + e.getMessage());
         }
     }
@@ -88,7 +123,6 @@ public class DataStorageManager {
             fileWriter.write(categoryData + "\n"); // Write the data to the file followed by a new line
             fileWriter.close(); // Close the file
         } catch (IOException e) {
-            // Handle any exceptions that occur during file writing
             System.out.println("Error writing data: " + e.getMessage());
         }
     }
@@ -178,11 +212,18 @@ public class DataStorageManager {
 
         int highestID = 0;
 
-        List<String> lines = Files.readAllLines(Paths.get(getDataFilePath(CATEGORY_FILE_PATH)));
-        for (String line : lines) {
-            Category category = Category.fromCsv(line);
-            highestID = Math.max(highestID, category.getID());
-            categories.getCategories().add(category);
+        Path categoriesFilePath = Paths.get(CATEGORY_FILE_PATH);
+        if (!Files.exists(categoriesFilePath)) {
+            // If the file does not exist, create it
+            Files.createFile(categoriesFilePath);
+        } else {
+            // If the file exists, read its contents
+            List<String> lines = Files.readAllLines(categoriesFilePath);
+            for (String line : lines) {
+                Category category = Category.fromCsv(line);
+                highestID = Math.max(highestID, category.getID());
+                categories.getCategories().add(category);
+            }
         }
         categories.setNextID(highestID + 1);
     }
@@ -195,11 +236,18 @@ public class DataStorageManager {
     private void loadTransactionsFromFile() throws IOException, URISyntaxException {
         transactions = new TransactionModel(this);
         int highestID = 0;
-        List<String> lines = Files.readAllLines(Paths.get(getDataFilePath(TRANSACTION_FILE_PATH)));
-        for (String line : lines) {
-            Transaction transaction = Transaction.fromCsv(line,categories);
-            highestID = Math.max(highestID, transaction.getID());
-            transactions.getTransactions().add(transaction);
+        Path transactionsFilePath = Paths.get(TRANSACTION_FILE_PATH);
+        if (!Files.exists(transactionsFilePath)) {
+            // If the file does not exist, create it
+            Files.createFile(transactionsFilePath);
+        } else {
+            // If the file exists, read its contents
+            List<String> lines = Files.readAllLines(transactionsFilePath);
+            for (String line : lines) {
+                Transaction transaction = Transaction.fromCsv(line, categories);
+                highestID = Math.max(highestID, transaction.getID());
+                transactions.getTransactions().add(transaction);
+            }
         }
         transactions.setNextID(highestID + 1);
     }
@@ -262,5 +310,4 @@ public class DataStorageManager {
             category.setCurrent(current);
         }
     }
-
 }
